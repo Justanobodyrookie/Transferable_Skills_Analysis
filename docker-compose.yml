@@ -1,0 +1,36 @@
+name: 104_project
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: job_market_mysql
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}          
+      MYSQL_USER: ${MYSQL_USER}                    
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - '3308:3306'
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:       
+      - data_network
+  minio:
+    image: minio/minio
+    container_name: job
+    command: server /data --console-address ":9003"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+    ports:
+      - "9000:9000"
+      - "9003:9003"
+    volumes:
+      - ./minio_data:/data
+    networks:
+      - data_network
+networks:
+  data_network:
+    driver: bridge

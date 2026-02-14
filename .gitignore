@@ -2,10 +2,18 @@
 __pycache__/
 *.py[codz]
 *$py.class
-
+test.py
+skill.txt
+104_Fast_Skills.json
+split.py
 # C extensions
 *.so
-
+category.txt
+Universal_Certificates.json
+Universal_Skills.json
+ce.txt
+mysql_data/
+minio_data/
 # Distribution / packaging
 .Python
 build/
