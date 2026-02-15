@@ -1,0 +1,6 @@
+mysql_data
+minio_data
+.git
+__pycache__
+.venv
+venv

@@ -29,6 +29,19 @@ services:
       - ./minio_data:/data
     networks:
       - data_network
+  crawler:
+    build: .
+    volumes:
+      - .:/app
+      - ./crawls:/app/crawls
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - minio
+    command: tail -f /dev/null
+    networks:
+      - data_network
 networks:
   data_network:
     driver: bridge
