@@ -1,8 +1,8 @@
 import scrapy
 
 
-class Job104Spider(scrapy.Spider):
-    name = "job104"
+class Job_marketSpider(scrapy.Spider):
+    name = "job"
     allowed_domains = ["104.com.tw"]
     start_urls = ["https://104.com.tw"]
 

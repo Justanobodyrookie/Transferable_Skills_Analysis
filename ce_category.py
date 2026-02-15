@@ -9,10 +9,11 @@ db_config = {
 	'port': os.getenv('MYSQL_PORT'),
 	'user': os.getenv('MYSQL_USER'),
 	'password': os.getenv('MYSQL_ROOT_PASSWORD'),
-	'database': os.getenv('MYSQL_DATABASE')	
+	'database': os.getenv('MYSQL_DATABASE')
 }
+
 def parse_json():
-	with open('category.txt', 'r', encoding='utf-8') as f:
+	with open('ce.txt', 'r', encoding='utf-8') as f:
 		data = json.load(f)
 	result = []
 	for l1 in data:
@@ -28,13 +29,13 @@ def parse_json():
 						l3_tuple = (l3['no'], l2['no'], l3['des'], l3.get('eng'), 3)
 						result.append(l3_tuple)
 	return result
-def save_to_db(data_list):
+def save_db(data_list):
 	conn = None
 	try:
 		conn = mysql.connector.connect(**db_config)
 		cursor = conn.cursor()
 		sql = """
-			insert ignore into job_category
+			insert ignore into ce
 			(code, parent_code, name, eng_name, level)
 			values (%s, %s, %s, %s, %s)
 		"""
@@ -42,14 +43,13 @@ def save_to_db(data_list):
 		conn.commit()
 		print(f"成功匯入 {cursor.rowcount} 筆資料")
 	except Exception as e:
-		print(f"在匯入時發生錯誤: {e}")
+		print(f"匯入時發生錯誤: {e}")
 	finally:
 		if conn and conn.is_connected():
 			cursor.close()
 			conn.close()
 			print(f"成功關閉cursor與conn")
 if __name__ == '__main__':
-	print(f"開始解析json")
 	a = parse_json()
+	save_db(a)
 	print(f"解析完成,共 {len(a)} 筆資料")
-	save_to_db(a)

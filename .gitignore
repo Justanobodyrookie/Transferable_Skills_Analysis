@@ -4,8 +4,9 @@ __pycache__/
 *$py.class
 test.py
 skill.txt
-104_Fast_Skills.json
+Fast_Skills.json
 split.py
+regions.txt
 # C extensions
 *.so
 category.txt

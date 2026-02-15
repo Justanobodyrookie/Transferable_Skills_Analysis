@@ -1,5 +1,3 @@
-name: 104_project
-
 services:
   db:
     image: mysql:8.0
