@@ -32,4 +32,18 @@ class MinIOpipeline:import
         except ClientError:
             self.s3_client.create_bucket(Bucket=self.bucket_name)
     def process_item(self, item, spider):
-        
+        try:
+           code = item.get('job_code')
+           date = datetime.now()
+           s3_key = f"{code}/{date}.json"
+           self.s3_client.put_object(
+                Bucket=self.bucket_name,
+                Key=s3_key,
+                Body=json_file,
+                ContentType='application/json'
+            )
+        except Exception as e:
+            spider.logger.error(f"寫入MinIO出問題: {e}")
+        return item
+    def close_spider(self, spider):
+        spider.logger.info(f"MinIO結束")
