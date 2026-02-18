@@ -11,12 +11,13 @@ import os
 import json
 from dotenv import load_dotenv
 from datetime import datetime
+from botocore.exceptions import ClientError
 
-class MinIOpipeline:import
+class MinIOpipeline:
     def __init__(self):
         load_dotenv()
         endpoint = os.getenv('MINIO_ENDPOINT')
-        access_key = os.getenv('MINIO_ACCESS_KEY')
+        access_key = os.getenv('MINIO_USER')
         secret_key = os.getenv('MINIO_PASSWORD')
         self.bucket_name = 'job-data'
         self.s3_client = boto3.client(
@@ -33,9 +34,10 @@ class MinIOpipeline:import
             self.s3_client.create_bucket(Bucket=self.bucket_name)
     def process_item(self, item, spider):
         try:
-           code = item.get('job_code')
-           date = datetime.now()
-           s3_key = f"{code}/{date}.json"
+           code = item.get('job_code')       
+           date = datetime.now().strftime('%Y-%m-%d')
+           s3_key = f"{date}/{code}.json"
+           json_file = json.dumps(dict(item), ensure_ascii=False)
            self.s3_client.put_object(
                 Bucket=self.bucket_name,
                 Key=s3_key,
