@@ -1,6 +1,8 @@
 import scrapy
 import json
 import os
+import random
+import time
 import mysql.connector
 from urllib.parse import urlencode
 from job_crawler.items import JobItem
@@ -10,7 +12,7 @@ load_dotenv()
 class Job_marketSpider(scrapy.Spider):
     name = "job"
     allowed_domains = ["104.com.tw"]
-    start_urls = ["https://www.104.com.tw/jobs/search/api/jobs"]
+    start_urls = "https://www.104.com.tw/jobs/search/api/jobs"
     default_params = {
         'area': '',
         'job_cat': '',
@@ -28,31 +30,35 @@ class Job_marketSpider(scrapy.Spider):
         'database': os.getenv('MYSQL_DATABASE')
     }
     def start_requests(self):
-        conn = mysql.connector.connect(**self.db_config)
-        cursor = conn.cursor()
-        cursor.execute('select code from regions where level = 3')
-        regions_code = [row[0] for row in cursor.fetchall()]
-        cursor.execute('select code from job_category where level = 3')
-        job_category = [row[0] for row in cursor.fetchall()]
-        for r_code in regions_code:
-            for j_code in job_category:
-                crawl_job = (r_code, j_code)
-                params = self.default_params.copy()
-                params['area'] = r_code
-                params['job_cat'] = j_code
-                params['page'] = 1
-                page = 1
-                url = f"{self.start_urls}?{urlencode(params)}"
-                yield scrapy.Request(
-                        url,
-                        callback=self.parse,
-                        meta={
-                            'reg_code': r_code,
-                            'job_code': j_code,
-                            'page': page
-                        }
-                    )
-        conn.close()
+        try:
+            conn = mysql.connector.connect(**self.db_config)
+            cursor = conn.cursor()
+            cursor.execute('select code from regions where level = 3 limit 3')
+            regions_code = [row[0] for row in cursor.fetchall()]
+            cursor.execute('select code from job_category where level = 3 limit 3')
+            job_category = [row[0] for row in cursor.fetchall()]
+            for r_code in regions_code:
+                for j_code in job_category:
+                    params = self.default_params.copy()
+                    params['area'] = r_code
+                    params['job_cat'] = j_code
+                    params['page'] = 1
+                    page = 1
+                    url = f"{self.start_urls}?{urlencode(params)}"
+                    yield scrapy.Request(
+                            url,
+                            callback=self.parse,
+                            meta={
+                                'reg_code': r_code,
+                                'job_code': j_code,
+                                'page': page
+                            }
+                        )
+        except Exception as e:
+            self.logger.info(f"資料庫連線: {e}")
+        finally:
+            conn.close()
+            self.logger.info(f'資料庫成功關閉')
     def parse(self, response):
         reg_code = response.meta['reg_code']
         job_code = response.meta['job_code']
@@ -76,17 +82,19 @@ class Job_marketSpider(scrapy.Spider):
             if len(jobs_list) > 0 and page < 150:
                 next_page = page + 1
                 params = self.default_params.copy()
-                params['reg_code'] = reg_code
-                params['job_code'] = job_code
+                params['area'] = reg_code
+                params['job_cat'] = job_code
                 params['page'] = next_page
                 next_url = f"{self.start_urls}?{urlencode(params)}"
-                self.logger.info(f"地區代號: {r_code}/ 工作分類: {j_code} 前往第 {page} 頁")
+                self.logger.info(f"地區代號: {reg_code}/ 工作分類: {job_code} 前往第 {page} 頁")
+                sleep_time = random.uniform(3, 6)
+                time.sleep(sleep_time)
                 yield scrapy.Request(
                     next_url,
                     callback=self.parse,
                     meta={
-                        'r_code': r_code,
-                        'j_code': j_code,
+                        'reg_code': reg_code,
+                        'job_code': job_code,
                         'page': next_page
                     }
                 )
