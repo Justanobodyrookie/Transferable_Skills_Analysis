@@ -12,6 +12,7 @@ class JobCrawlerItem(scrapy.Item):
     job_code = scrapy.Field()
     raw_data = scrapy.Field()
     category_code = scrapy.Field()
+    region_code = scrapy.Field()
     
     # company_name = scrapy.Field()
 

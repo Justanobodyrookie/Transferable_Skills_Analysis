@@ -8,6 +8,7 @@ Fast_Skills.json
 split.py
 regions.txt
 test1.py
+crawls/
 # C extensions
 *.so
 category.txt

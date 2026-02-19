@@ -34,9 +34,10 @@ class MinIOpipeline:
             self.s3_client.create_bucket(Bucket=self.bucket_name)
     def process_item(self, item, spider):
         try:
-           code = item.get('job_code')       
+           code = item.get('job_code')
+           reg_code = item.get('region_code')      
            date = datetime.now().strftime('%Y-%m-%d')
-           s3_key = f"{date}/{code}.json"
+           s3_key = f"{date}/{reg_code}/{code}.json"
            json_file = json.dumps(dict(item), ensure_ascii=False)
            self.s3_client.put_object(
                 Bucket=self.bucket_name,

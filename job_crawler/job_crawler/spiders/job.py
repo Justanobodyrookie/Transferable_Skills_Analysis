@@ -5,7 +5,7 @@ import random
 import time
 import mysql.connector
 from urllib.parse import urlencode
-from job_crawler.items import JobItem
+from job_crawler.items import JobCrawlerItem
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -33,9 +33,9 @@ class Job_marketSpider(scrapy.Spider):
         try:
             conn = mysql.connector.connect(**self.db_config)
             cursor = conn.cursor()
-            cursor.execute('select code from regions where level = 3 limit 3')
+            cursor.execute('select code from regions where level = 3')
             regions_code = [row[0] for row in cursor.fetchall()]
-            cursor.execute('select code from job_category where level = 3 limit 3')
+            cursor.execute('select code from job_category where level = 3')
             job_category = [row[0] for row in cursor.fetchall()]
             for r_code in regions_code:
                 for j_code in job_category:
@@ -72,8 +72,9 @@ class Job_marketSpider(scrapy.Spider):
                 self.logger.info(f'地區分類: {reg_code}/工作分類: {job_code}, 第 {page} 頁無資料,停止')
                 return
             for job in jobs_list:
-                item = JobItem()
+                item = JobCrawlerItem()
                 item['job_code'] = job['link']['job'].split('/')[-1].split('?')[0]
+                item['region_code'] = job['jobAddrNo']
                 item['raw_data'] = job
                 raw_cat = job.get('jobCat', [])
                 cate_code = json.dumps(raw_cat)
@@ -87,8 +88,6 @@ class Job_marketSpider(scrapy.Spider):
                 params['page'] = next_page
                 next_url = f"{self.start_urls}?{urlencode(params)}"
                 self.logger.info(f"地區代號: {reg_code}/ 工作分類: {job_code} 前往第 {page} 頁")
-                sleep_time = random.uniform(3, 6)
-                time.sleep(sleep_time)
                 yield scrapy.Request(
                     next_url,
                     callback=self.parse,
