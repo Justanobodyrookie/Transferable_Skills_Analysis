@@ -35,8 +35,10 @@ class Job_marketSpider(scrapy.Spider):
             cursor = conn.cursor()
             cursor.execute('select code from regions where level = 3')
             regions_code = [row[0] for row in cursor.fetchall()]
-            cursor.execute('select code from job_category where level = 3')
+            cursor.execute('select code from job_category where level = 2')
             job_category = [row[0] for row in cursor.fetchall()]
+            self.logger.info(f"地區數量: {len(regions_code)}")
+            self.logger.info(f"職缺數量: {len(job_category)}")
             for r_code in regions_code:
                 for j_code in job_category:
                     params = self.default_params.copy()
