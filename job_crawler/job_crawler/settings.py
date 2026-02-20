@@ -5,12 +5,12 @@ NEWSPIDER_MODULE = "job_crawler.spiders"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
-CONCURRENT_REQUESTS = 16
+CONCURRENT_REQUESTS = 32 # 16 # 8
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
-DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY = 0.5 # 1 # 2
 RANDOMIZE_DOWNLOAD_DELAY = True
 COOKIES_ENABLED = True
 DEFAULT_REQUEST_HEADERS = {
