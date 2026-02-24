@@ -5,7 +5,7 @@ NEWSPIDER_MODULE = "job_crawler.spiders"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
-CONCURRENT_REQUESTS = 32 # 16 # 8
+CONCURRENT_REQUESTS = 64 # 16 # 8
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
