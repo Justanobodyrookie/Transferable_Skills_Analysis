@@ -6,7 +6,7 @@
       { "no": "11", "des": "程式語言", "n": [
     "JavaScript", "TypeScript", "Python", "Java", "C#", "Go", "PHP", 
     "Ruby", "Rust", "Swift", "Kotlin", "Dart", "C", "C++", "R", 
-    "Julia", "SQL", "Shell", "PowerShell", "Lua"
+    "Julia", "SQL", "Shell", "PowerShell", "Lua", "Golang"
     ] },
       { "no": "12", "des": "資料庫管理", "n": [
     "MySQL", "PostgreSQL", "Oracle", "SQL Server", "SQLite", "MariaDB", 
@@ -20,17 +20,17 @@
           {
             "skill_name": "前端網頁切版開發",
             "require_all": ["前端"],
-            "require_any": ["切版", "開發", "響應式", "網頁", "HTML", "CSS", "jQuery", "AJAX"]
+            "require_any": ["切版", "開發", "響應式", "網頁", "HTML", "CSS", "jQuery", "AJAX", "HTML5", "vuex", "angularjs", "css3"]
           },
           {
             "skill_name": "三大前端框架",
             "require_all": [],
-            "require_any": ["React", "Vue", "Angular", "React.js", "Vue.js"]
+            "require_any": ["React", "Vue", "Angular", "React.js", "Vue.js", "Reactjs", "Vuejs"]
           },
           {
             "skill_name": "UI/UX設計工具",
             "require_all": [],
-            "require_any": ["Figma", "Adobe XD", "Sketch", "UI", "UX", "使用者體驗"]
+            "require_any": ["Figma", "Adobe XD", "Sketch", "UI", "UX", "使用者體驗", "Wireframe", "Mockup", "CorelDraw", "Midjourney"]
           },
           {
             "skill_name": "CSS預處理與框架",
@@ -52,7 +52,7 @@
       { "no": "14", "des": "後端架構", "n": [{
         "skill_name": "後端應用框架",
         "require_all": [],
-        "require_any": ["Django", "Flask", "FastAPI", "Spring Boot", "Express", "Laravel", "ASP.NET"]
+        "require_any": ["Django", "Flask", "FastAPI", "Spring Boot", "Express", "Laravel", "ASP.NET", "Node", "Spring", "Hibernate", "Winform", "Laravel"]
       },
       {
         "skill_name": "網頁伺服器與反向代理",
@@ -87,7 +87,7 @@
       {
         "skill_name": "CI/CD與版本控制",
         "require_all": [],
-        "require_any": ["Git", "GitHub Actions", "GitLab CI", "Jenkins", "持續整合", "DevOps"]
+        "require_any": ["Git", "GitHub Actions", "GitLab CI", "Jenkins", "持續整合", "DevOps", "GitLab"]
       },
       {
         "skill_name": "雲端服務與伺服器",
@@ -113,7 +113,7 @@
       {
         "skill_name": "系統監控與日誌分析",
         "require_all": [],
-        "require_any": ["Prometheus", "Grafana", "ELK", "Zabbix", "Datadog", "Splunk"]
+        "require_any": ["Prometheus", "Grafana", "ELK", "Zabbix", "Datadog", "Splunk", "Logstash", "Kibana"]
       },
       {
         "skill_name": "基礎架構即代碼 (IaC)",
@@ -127,7 +127,7 @@
           {
             "skill_name": "軟體驗證與測試",
             "require_all": ["測試"],
-            "require_any": ["自動化", "黑箱", "白箱", "壓力", "單元測試"]
+            "require_any": ["自動化", "黑箱", "白箱", "壓力", "單元測試", "E2E", "Regression"]
           },
           {
             "skill_name": "自動化測試框架",
@@ -169,7 +169,7 @@
       {
         "skill_name": "大數據處理框架",
         "require_all": [],
-        "require_any": ["Hadoop", "Spark", "PySpark", "Flink", "MapReduce", "大數據", "Big Data"]
+        "require_any": ["Hadoop", "Spark", "PySpark", "Flink", "MapReduce", "大數據", "Big Data", "ETL"]
       },
       {
         "skill_name": "資料視覺化與BI工具",
@@ -219,6 +219,11 @@
             "skill_name": "系統需求分析",
             "require_all": ["系統"],
             "require_any": ["分析", "設計", "架構", "需求訪談"]
+          },
+          {
+            "skill_name": "地理圖資系統",
+            "require_all": [],
+            "require_any": ["GIS", "ArcGIS"]
           },
           {
             "skill_name": "系統架構設計",
@@ -369,7 +374,7 @@
           {
             "skill_name": "商業策略擬定",
             "require_all": ["策略"],
-            "require_any": ["擬定", "商業模式", "發展", "規劃"]
+            "require_any": ["擬定", "商業模式", "發展", "規劃", "ESG", "永續發展", "CSR"]
           }
         ]
       },
@@ -402,7 +407,7 @@
           {
             "skill_name": "網站流量分析",
             "require_all": ["流量"],
-            "require_any": ["分析", "追蹤", "數據", "監控"]
+            "require_any": ["分析", "追蹤", "數據", "監控", "GA", "Google Analytics", "GA4"]
           }
         ]
       },
@@ -413,7 +418,7 @@
           {
             "skill_name": "社群平台營運",
             "require_all": ["社群"],
-            "require_any": ["經營", "互動", "小編", "維護"]
+            "require_any": ["經營", "互動", "小編", "維護", "IG", "Instagram", "Dcard", "YT", "Threads"]
           },
           {
             "skill_name": "內容文案企劃",
@@ -429,7 +434,7 @@
           {
             "skill_name": "陌生客戶開發",
             "require_all": ["開發"],
-            "require_any": ["陌生", "客戶", "潛在", "市場"]
+            "require_any": ["陌生", "客戶", "潛在", "市場", "B2B", "B2C"]
           },
           {
             "skill_name": "合約報價與談判",
@@ -461,7 +466,7 @@
           {
             "skill_name": "數位廣告操作",
             "require_all": ["廣告"],
-            "require_any": ["投放", "操作", "預算", "採買"]
+            "require_any": ["投放", "操作", "預算", "採買", "EDM"]
           },
           {
             "skill_name": "廣告成效優化",
@@ -477,7 +482,7 @@
           {
             "skill_name": "品牌形象操作",
             "require_all": ["品牌"],
-            "require_any": ["形象", "操作", "定位", "推廣"]
+            "require_any": ["形象", "操作", "定位", "推廣", "KOL", "POSM"]
           },
           {
             "skill_name": "媒體公關與危機處理",
@@ -515,7 +520,7 @@
           {
             "skill_name": "財務報表編製",
             "require_all": ["財務"],
-            "require_any": ["編製", "結帳", "分析", "產出"]
+            "require_any": ["編製", "結帳", "分析", "產出", "IFRS"  ]
           },
           {
             "skill_name": "資金調度與稅務",
@@ -552,7 +557,7 @@
           {
             "skill_name": "文書處理與會議記錄",
             "require_all": [],
-            "require_any": ["會議記錄", "文書處理", "行政", "歸檔"]
+            "require_any": ["會議記錄", "文書處理", "行政", "歸檔","Excel", "Word", "PowerPoint", "Office", "ERP"]
           }
         ]
       },
@@ -625,7 +630,7 @@
           {
             "skill_name": "視覺與平面排版",
             "require_all": ["平面"],
-            "require_any": ["設計", "排版", "視覺", "海報", "完稿"]
+            "require_any": ["設計", "排版", "視覺", "海報", "完稿","Photoshop", "Illustrator", "InDesign", "Canva", "PS", "AI"]
           }
         ]
       },
@@ -636,7 +641,7 @@
           {
             "skill_name": "影音剪輯與後製",
             "require_all": ["影音"],
-            "require_any": ["剪輯", "後製", "企劃", "拍攝", "腳本"]
+            "require_any": ["剪輯", "後製", "企劃", "拍攝", "腳本", "Premiere", "PR"]
           }
         ]
       },
@@ -689,7 +694,7 @@
       { "no": "61", "des": "硬體與電路設計", "n": [{
         "skill_name": "電路與PCB Layout設計",
         "require_all": [],
-        "require_any": ["PCB Layout", "Altium", "OrCAD", "PADS", "Allegro", "電路設計", "佈線"]
+        "require_any": ["PCB Layout", "Altium", "OrCAD", "PADS", "Allegro", "電路設計", "佈線", "Cadence"]
       },
       {
         "skill_name": "硬體架構與系統設計",
@@ -899,7 +904,7 @@
       {
         "skill_name": "藥廠品管與規範",
         "require_all": ["藥廠"],
-        "require_any": ["品保", "品管", "GMP", "PIC/S", "GDP", "確效"]
+        "require_any": ["品保", "品管", "GMP", "PIC/S", "GDP", "確效", "CDMO", "CRO"]
       }] },
       { "no": "73", "des": "金融與投資分析", "n": [{
         "skill_name": "總體經濟與產業研究",
@@ -1102,7 +1107,7 @@
           {
             "skill_name": "施工圖面繪製",
             "require_all": ["圖面"],
-            "require_any": ["施工圖", "繪製", "AutoCAD", "竣工圖"]
+            "require_any": ["施工圖", "繪製", "AutoCAD", "竣工圖", "Revit", "SketchUp", "BIM"]
           },
           {
             "skill_name": "室內空間規劃",
