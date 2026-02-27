@@ -3,18 +3,258 @@
     "no": "1",
     "des": "資訊科技",
     "n": [
-      { "no": "11", "des": "程式語言", "n": [] },
-      { "no": "12", "des": "資料庫管理", "n": [] },
-      { "no": "13", "des": "前端與UI開發", "n": [] },
-      { "no": "14", "des": "後端架構", "n": [] },
-      { "no": "15", "des": "雲端與網管維運", "n": [] },
-      { "no": "16", "des": "軟體測試與QA", "n": [] },
-      { "no": "17", "des": "資料科學與大數據分析", "n": [] },
-      { "no": "18", "des": "資訊安全", "n": [] },
-      { "no": "19", "des": "系統分析與設計", "n": [] }
+      { "no": "11", "des": "程式語言", "n": [
+    "JavaScript", "TypeScript", "Python", "Java", "C#", "Go", "PHP", 
+    "Ruby", "Rust", "Swift", "Kotlin", "Dart", "C", "C++", "R", 
+    "Julia", "SQL", "Shell", "PowerShell", "Lua"
+    ] },
+      { "no": "12", "des": "資料庫管理", "n": [
+    "MySQL", "PostgreSQL", "Oracle", "SQL Server", "SQLite", "MariaDB", 
+    "MongoDB", "Redis", "Cassandra", "Elasticsearch", "Neo4j", "DynamoDB", 
+    "InfluxDB", "MinIO"
+    ] },
+      {
+        "no": "13",
+        "des": "前端與UI開發",
+        "n": [
+          {
+            "skill_name": "前端網頁切版開發",
+            "require_all": ["前端"],
+            "require_any": ["切版", "開發", "響應式", "網頁", "HTML", "CSS", "jQuery", "AJAX"]
+          },
+          {
+            "skill_name": "三大前端框架",
+            "require_all": [],
+            "require_any": ["React", "Vue", "Angular", "React.js", "Vue.js"]
+          },
+          {
+            "skill_name": "UI/UX設計工具",
+            "require_all": [],
+            "require_any": ["Figma", "Adobe XD", "Sketch", "UI", "UX", "使用者體驗"]
+          },
+          {
+            "skill_name": "CSS預處理與框架",
+            "require_all": [],
+            "require_any": ["Tailwind", "Bootstrap", "Sass", "SCSS", "Less"]
+          },
+          {
+            "skill_name": "前端狀態管理",
+            "require_all": ["狀態管理"],
+            "require_any": ["Redux", "Vuex", "Pinia", "Zustand"]
+          },
+          {
+            "skill_name": "前端建置工具",
+            "require_all": [],
+            "require_any": ["Webpack", "Vite", "Gulp", "Babel"]
+          }
+        ]
+      },
+      { "no": "14", "des": "後端架構", "n": [{
+        "skill_name": "後端應用框架",
+        "require_all": [],
+        "require_any": ["Django", "Flask", "FastAPI", "Spring Boot", "Express", "Laravel", "ASP.NET"]
+      },
+      {
+        "skill_name": "網頁伺服器與反向代理",
+        "require_all": [],
+        "require_any": ["Nginx", "Apache", "Tomcat", "IIS", "反向代理", "Reverse Proxy"]
+      },
+      {
+        "skill_name": "API設計與通訊協定",
+        "require_all": [],
+        "require_any": ["RESTful", "GraphQL", "gRPC", "WebSocket", "API", "Webhook"]
+      },
+      {
+        "skill_name": "訊息佇列與非同步處理",
+        "require_all": [],
+        "require_any": ["RabbitMQ", "Kafka", "Celery", "SQS", "Message Queue", "Event Stream"]
+      },
+      {
+        "skill_name": "身分驗證與資訊安全",
+        "require_all": [],
+        "require_any": ["OAuth", "JWT", "SSO", "RBAC", "身分驗證", "Authentication", "CORS"]
+      },
+      {
+        "skill_name": "網頁爬蟲與資料擷取",
+        "require_all": [],
+        "require_any": ["Scrapy", "Selenium", "BeautifulSoup", "Puppeteer", "爬蟲", "Web Scraping"]
+      },
+      {
+        "skill_name": "容器化與虛擬化",
+        "require_all": [],
+        "require_any": ["Docker", "Kubernetes", "K8s", "docker-compose", "虛擬化", "VMware"]
+      },
+      {
+        "skill_name": "CI/CD與版本控制",
+        "require_all": [],
+        "require_any": ["Git", "GitHub Actions", "GitLab CI", "Jenkins", "持續整合", "DevOps"]
+      },
+      {
+        "skill_name": "雲端服務與伺服器",
+        "require_all": [],
+        "require_any": ["AWS", "GCP", "Azure", "Serverless", "EC2", "Lambda", "Linux"]
+      }] 
+      },
+      { "no": "15", "des": "雲端與網管維運", "n": [{
+        "skill_name": "公有雲平台",
+        "require_all": [],
+        "require_any": ["AWS", "GCP", "Azure", "阿里雲", "Cloud"]
+      },
+      {
+        "skill_name": "伺服器作業系統",
+        "require_all": [],
+        "require_any": ["Linux", "Ubuntu", "CentOS", "RedHat", "Windows Server"]
+      },
+      {
+        "skill_name": "網路通訊與基礎架構",
+        "require_all": [],
+        "require_any": ["TCP/IP", "DNS", "VPN", "Firewall", "Load Balancing", "Router", "Switch", "VPC"]
+      },
+      {
+        "skill_name": "系統監控與日誌分析",
+        "require_all": [],
+        "require_any": ["Prometheus", "Grafana", "ELK", "Zabbix", "Datadog", "Splunk"]
+      },
+      {
+        "skill_name": "基礎架構即代碼 (IaC)",
+        "require_all": [],
+        "require_any": ["Terraform", "Ansible", "Puppet", "Chef"]
+      }] },
+      {
+        "no": "16",
+        "des": "軟體測試與QA",
+        "n": [
+          {
+            "skill_name": "軟體驗證與測試",
+            "require_all": ["測試"],
+            "require_any": ["自動化", "黑箱", "白箱", "壓力", "單元測試"]
+          },
+          {
+            "skill_name": "自動化測試框架",
+            "require_all": [],
+            "require_any": ["Selenium", "Appium", "Cypress", "Playwright", "Robot Framework", "自動化測試"]
+          },
+          {
+            "skill_name": "單元與整合測試",
+            "require_all": [],
+            "require_any": ["JUnit", "PyTest", "Jest", "Mocha", "TestNG", "Unit Test", "整合測試"]
+          },
+          {
+            "skill_name": "效能與壓力測試",
+            "require_all": [],
+            "require_any": ["JMeter", "LoadRunner", "K6", "壓力測試", "效能測試", "Performance Test"]
+          },
+          {
+            "skill_name": "API 測試與驗證",
+            "require_all": [],
+            "require_any": ["Postman", "Swagger", "SoapUI", "API Test"]
+          }
+        ]
+      },
+      { "no": "17", "des": "資料科學與大數據分析", "n": [{
+        "skill_name": "資料處理與探勘",
+        "require_all": [],
+        "require_any": ["Pandas", "NumPy", "SciPy", "資料清洗", "Data Mining", "EDA"]
+      },
+      {
+        "skill_name": "機器學習演算法",
+        "require_all": [],
+        "require_any": ["Scikit-learn", "XGBoost", "LightGBM", "機器學習", "Machine Learning", "ML"]
+      },
+      {
+        "skill_name": "深度學習與AI",
+        "require_all": [],
+        "require_any": ["TensorFlow", "PyTorch", "Keras", "深度學習", "Deep Learning", "NLP", "CV", "LLM"]
+      },
+      {
+        "skill_name": "大數據處理框架",
+        "require_all": [],
+        "require_any": ["Hadoop", "Spark", "PySpark", "Flink", "MapReduce", "大數據", "Big Data"]
+      },
+      {
+        "skill_name": "資料視覺化與BI工具",
+        "require_all": [],
+        "require_any": ["Tableau", "Power BI", "Matplotlib", "Seaborn", "Plotly", "資料視覺化", "BI"]
+      },
+      {
+        "skill_name": "資料工程與資料流",
+        "require_all": [],
+        "require_any": ["Airflow", "ETL", "Data Pipeline", "Data Warehouse", "dbt", "資料倉儲"]
+      }] },
+      { "no": "18", "des": "資訊安全", "n": [{
+        "skill_name": "網路安全防護",
+        "require_all": [],
+        "require_any": ["WAF", "IDS", "IPS", "防火牆", "Firewall", "DDoS防禦", "零信任", "Zero Trust"]
+      },
+      {
+        "skill_name": "弱點掃描與滲透測試",
+        "require_all": [],
+        "require_any": ["滲透測試", "弱點掃描", "Burp Suite", "Nmap", "Metasploit", "Nessus", "PT", "CEH", "紅隊"]
+      },
+      {
+        "skill_name": "資安監控與事件回應",
+        "require_all": [],
+        "require_any": ["SOC", "SIEM", "事件回應", "鑑識", "Malware", "資安監控", "藍隊", "Incident Response"]
+      },
+      {
+        "skill_name": "應用程式安全與 DevSecOps",
+        "require_all": [],
+        "require_any": ["DevSecOps", "SAST", "DAST", "OWASP", "原始碼檢測", "AppSec"]
+      },
+      {
+        "skill_name": "加密技術與憑證管理",
+        "require_all": [],
+        "require_any": ["SSL", "TLS", "PKI", "RSA", "AES", "憑證", "密碼學"]
+      },
+      {
+        "skill_name": "資安合規與稽核",
+        "require_all": [],
+        "require_any": ["ISO 27001", "GDPR", "PCI-DSS", "資安稽核", "法規遵循", "Compliance", "ISO 27701"]
+      }] },
+      {
+        "no": "19",
+        "des": "系統分析與設計",
+        "n": [
+          {
+            "skill_name": "系統需求分析",
+            "require_all": ["系統"],
+            "require_any": ["分析", "設計", "架構", "需求訪談"]
+          },
+          {
+            "skill_name": "系統架構設計",
+            "require_all": [],
+            "require_any": ["架構設計", "SD", "系統設計", "Microservices", "微服務", "SOA", "MVC", "系統架構"]
+          },
+          {
+            "skill_name": "UML與塑模工具",
+            "require_all": [],
+            "require_any": ["UML", "Enterprise Architect", "Draw.io", "PlantUML", "塑模", "循序圖", "Use Case", "類別圖"]
+          },
+          {
+            "skill_name": "資料建模與流程設計",
+            "require_all": [],
+            "require_any": ["ERD", "資料庫設計", "Schema", "流程圖", "Flowchart", "BPMN", "資料流程圖", "DFD"]
+          },
+          {
+            "skill_name": "介面與API規格制定",
+            "require_all": [],
+            "require_any": ["API規格", "API Spec", "OpenAPI", "Swagger", "介面設計", "API設計"]
+          },
+          {
+            "skill_name": "技術文件與手冊撰寫",
+            "require_all": ["文件"],
+            "require_any": ["撰寫", "需求", "分析", "操作流程", "手冊"]
+          },
+          {
+            "skill_name": "系統導入與教育訓練",
+            "require_all": ["教育訓練"],
+            "require_any": ["系統", "專案", "操作", "客戶", "導入"]
+          }
+        ]
+      }
     ]
   },
-{
+  {
     "no": "2",
     "des": "商業與管理",
     "n": [
@@ -25,7 +265,7 @@
           {
             "skill_name": "專案時程控管",
             "require_all": ["專案"],
-            "require_any": ["進度", "時程", "控管", "資源規劃"]
+            "require_any": ["進度", "時程", "控管", "資源規劃", "規劃", "執行", "追蹤"]
           },
           {
             "skill_name": "成本與預算評估",
@@ -36,6 +276,41 @@
             "skill_name": "跨部門溝通與協調",
             "require_all": ["溝通"],
             "require_any": ["跨部門", "協調", "整合"]
+          },
+          {
+            "skill_name": "敏捷開發與流程",
+            "require_all": [],
+            "require_any": ["Scrum", "Agile", "敏捷", "Kanban", "Sprint", "衝刺"]
+          },
+          {
+            "skill_name": "專案管理工具",
+            "require_all": [],
+            "require_any": ["Jira", "Trello", "Asana", "Redmine", "Notion", "MS Project"]
+          },
+          {
+            "skill_name": "風險評估與管理",
+            "require_all": ["風險"],
+            "require_any": ["管理", "評估", "控管", "預防", "應變"]
+          },
+          {
+            "skill_name": "需求管理",
+            "require_all": ["需求"], 
+            "require_any": ["釐清", "管理", "訪談", "變更", "分析"] 
+          },
+          {
+            "skill_name": "範疇管理",
+            "require_all": ["範疇"], 
+            "require_any": ["釐清", "管理", "訪談", "變更", "分析"] 
+          },
+          {
+            "skill_name": "品質管理",
+            "require_all": ["品質"],
+            "require_any": ["管理", "把關", "測試", "標準"]
+          },
+          {
+            "skill_name": "驗收管理",
+            "require_all": ["驗收"],
+            "require_any": ["管理", "把關", "測試", "標準"]
           }
         ]
       },
@@ -239,12 +514,12 @@
         "n": [
           {
             "skill_name": "財務報表編製",
-            "require_all": ["財報"],
+            "require_all": ["財務"],
             "require_any": ["編製", "結帳", "分析", "產出"]
           },
           {
             "skill_name": "資金調度與稅務",
-            "require_all": ["稅務"],
+            "require_all": ["資金"],
             "require_any": ["資金", "申報", "調度", "規劃"]
           }
         ]
@@ -271,8 +546,13 @@
         "n": [
           {
             "skill_name": "資產與庶務管理",
-            "require_all": ["管理"],
-            "require_any": ["資產", "庶務", "採購", "設備"]
+            "require_all": ["庶務"],
+            "require_any": ["資產", "採購", "設備"]
+          },
+          {
+            "skill_name": "文書處理與會議記錄",
+            "require_all": [],
+            "require_any": ["會議記錄", "文書處理", "行政", "歸檔"]
           }
         ]
       },
@@ -289,6 +569,35 @@
             "skill_name": "採購議價與交期控管",
             "require_all": ["採購"],
             "require_any": ["議價", "交期", "控管", "跟催"]
+          }]},
+          {
+        "no": "46",
+        "des": "國際貿易與進出口",
+        "n": [
+          {
+            "skill_name": "進出口船務與報關",
+            "require_all": [],
+            "require_any": ["國貿", "船務", "報關", "進出口", "信用狀", "海空運", "Forwarder", "提單"]
+          },
+          {
+            "skill_name": "海外供應商開發",
+            "require_all": ["海外"],
+            "require_any": ["供應商", "開發", "採購", "Sourcing", "代理商"]
+          },
+          {
+            "skill_name": "國際商務與跨國談判",
+            "require_all": ["國際"],
+            "require_any": ["談判", "合約", "商務", "代理", "貿易"]
+          },
+          {
+            "skill_name": "外匯與結匯作業",
+            "require_all": ["結匯"],
+            "require_any": ["外匯", "匯率", "避險", "信用狀", "L/C", "T/T"]
+          },
+          {
+            "skill_name": "國際關稅與貿易法規",
+            "require_all": ["關稅"],
+            "require_any": ["法規", "貿易", "FTA", "關務", "保稅"]
           }
         ]
       }
@@ -298,35 +607,383 @@
     "no": "5",
     "des": "設計與多媒體",
     "n": [
-      { "no": "51", "des": "UI/UX設計", "n": [] },
-      { "no": "52", "des": "平面與視覺設計", "n": [] },
-      { "no": "53", "des": "影音企劃與後製", "n": [] },
-      { "no": "54", "des": "3D與動畫設計", "n": [] },
-      { "no": "55", "des": "工業與包裝設計", "n": [] }
+      {
+        "no": "51",
+        "des": "UI/UX設計",
+        "n": [
+          {
+            "skill_name": "使用者體驗與介面研究",
+            "require_all": ["使用者"],
+            "require_any": ["體驗", "介面", "研究", "流程", "訪談"]
+          }
+        ]
+      },
+      {
+        "no": "52",
+        "des": "平面與視覺設計",
+        "n": [
+          {
+            "skill_name": "視覺與平面排版",
+            "require_all": ["平面"],
+            "require_any": ["設計", "排版", "視覺", "海報", "完稿"]
+          }
+        ]
+      },
+      {
+        "no": "53",
+        "des": "影音企劃與後製",
+        "n": [
+          {
+            "skill_name": "影音剪輯與後製",
+            "require_all": ["影音"],
+            "require_any": ["剪輯", "後製", "企劃", "拍攝", "腳本"]
+          }
+        ]
+      },
+      { "no": "54", "des": "3D與動畫設計", "n": [{
+        "skill_name": "3D建模與算圖",
+        "require_all": [],
+        "require_any": ["Maya", "3ds Max", "Blender", "ZBrush", "Cinema 4D", "C4D", "V-Ray", "3D建模"]
+      },
+      {
+        "skill_name": "2D與3D動畫製作",
+        "require_all": ["動畫"],
+        "require_any": ["製作", "Spine", "Live2D", "骨架", "分鏡", "Rigging"]
+      },
+      {
+        "skill_name": "動態圖形與視覺特效",
+        "require_all": [],
+        "require_any": ["After Effects", "AE", "Motion Graphics", "MG動畫", "特效", "VFX"]
+      },
+      {
+        "skill_name": "遊戲引擎與即時運算",
+        "require_all": [],
+        "require_any": ["Unity", "Unreal", "Unreal Engine", "UE4", "UE5"]
+      }] },
+      { "no": "55", "des": "工業與包裝設計", "n": [{
+        "skill_name": "產品外觀與工業設計",
+        "require_all": [],
+        "require_any": ["SolidWorks", "Rhino", "Pro/E", "Creo", "工業設計", "產品外觀"]
+      },
+      {
+        "skill_name": "包裝結構與視覺設計",
+        "require_all": ["包裝"],
+        "require_any": ["結構", "視覺", "刀模", "彩盒", "外箱", "展開圖"]
+      },
+      {
+        "skill_name": "印刷實務與材質應用",
+        "require_all": ["印刷"],
+        "require_any": ["發包", "材質", "完稿", "校色", "加工", "燙金"]
+      },
+      {
+        "skill_name": "打樣與模型製作",
+        "require_all": ["打樣"],
+        "require_any": ["模型", "3D列印", "Mockup", "測試", "打版"]
+      }] }
     ]
   },
   {
     "no": "6",
     "des": "工程與製造",
     "n": [
-      { "no": "61", "des": "硬體與電路設計", "n": [] },
-      { "no": "62", "des": "製程規劃與改善", "n": [] },
-      { "no": "63", "des": "品質管制(QA/QC)", "n": [] },
-      { "no": "64", "des": "自動化與機電整合", "n": [] },
-      { "no": "65", "des": "化工與材料研發", "n": [] }
+      { "no": "61", "des": "硬體與電路設計", "n": [{
+        "skill_name": "電路與PCB Layout設計",
+        "require_all": [],
+        "require_any": ["PCB Layout", "Altium", "OrCAD", "PADS", "Allegro", "電路設計", "佈線"]
+      },
+      {
+        "skill_name": "硬體架構與系統設計",
+        "require_all": ["硬體"],
+        "require_any": ["架構", "系統", "研發", "BOM表", "主機板"]
+      },
+      {
+        "skill_name": "IC設計與FPGA開發",
+        "require_all": [],
+        "require_any": ["IC設計", "FPGA", "Verilog", "VHDL", "ASIC", "SoC", "晶片"]
+      },
+      {
+        "skill_name": "電磁相容與訊號完整性",
+        "require_all": [],
+        "require_any": ["EMC", "EMI", "SI", "PI", "訊號完整性", "安規", "射頻", "RF"]
+      },
+      {
+        "skill_name": "硬體測試與儀器操作",
+        "require_all": [],
+        "require_any": ["示波器", "邏輯分析儀", "頻譜分析儀", "三用電表", "焊接", "硬體測試"]
+      }] },
+      {
+        "no": "62",
+        "des": "製程規劃與改善",
+        "n": [
+          {
+        "skill_name": "製程良率優化",
+        "require_all": ["製程"],
+        "require_any": ["改善", "良率", "規劃", "參數", "分析"]
+      },
+      {
+        "skill_name": "標準工時與產線規劃",
+        "require_all": ["產線"],
+        "require_any": ["規劃", "工時", "動線", "佈置", "IE", "工業工程"]
+      },
+      {
+        "skill_name": "治具與治工具設計",
+        "require_all": ["治具"],
+        "require_any": ["設計", "開發", "維護", "治工具", "夾具"]
+      },
+      {
+        "skill_name": "精實生產與六標準差",
+        "require_all": [],
+        "require_any": ["精實生產", "Lean", "六標準差", "Six Sigma", "5S", "持續改善"]
+      },
+      {
+        "skill_name": "試產與量產導入",
+        "require_all": ["量產"],
+        "require_any": ["試產", "導入", "NPI", "評估", "SOP", "移轉"]
+      }
+        ]
+      },
+      {
+        "no": "63",
+        "des": "品質管制(QA/QC)",
+        "n": [
+          {
+        "skill_name": "品管檢驗與異常處理",
+        "require_all": ["品管"],
+        "require_any": ["檢驗", "抽樣", "異常", "客訴", "處置"]
+      },
+      {
+        "skill_name": "品質系統與稽核管理",
+        "require_all": [],
+        "require_any": ["ISO 9001", "IATF 16949", "內部稽核", "品質管理系統", "QMS"]
+      },
+      {
+        "skill_name": "可靠度與驗證測試",
+        "require_all": ["可靠度"],
+        "require_any": ["測試", "驗證", "壽命", "環境", "冷熱衝擊"]
+      },
+      {
+        "skill_name": "供應商與進料品質",
+        "require_all": [],
+        "require_any": ["SQE", "IQC", "進料檢驗", "供應商評鑑", "OQC", "IPQC"]
+      },
+      {
+        "skill_name": "品質手法與失效分析",
+        "require_all": [],
+        "require_any": ["FMEA", "SPC", "8D", "QC七大手法", "失效分析", "CPK"]
+      },
+      {
+        "skill_name": "精密量測儀器操作",
+        "require_all": ["量測"],
+        "require_any": ["游標卡尺", "分厘卡", "三次元", "2.5D", "儀器校正"]
+      }
+        ]
+      },
+      {
+        "no": "64",
+        "des": "自動化與機電整合",
+        "n": [
+          {
+        "skill_name": "機電整合控制",
+        "require_all": ["機電"],
+        "require_any": ["整合", "自動化", "配線", "控制", "弱電"]
+      },
+      {
+        "skill_name": "PLC與人機介面",
+        "require_all": [],
+        "require_any": ["PLC", "HMI", "人機介面", "SCADA", "圖控", "三菱", "西門子"]
+      },
+      {
+        "skill_name": "馬達與運動控制",
+        "require_all": ["控制"],
+        "require_any": ["伺服馬達", "變頻器", "步進馬達", "運動控制", "Motion Control"]
+      },
+      {
+        "skill_name": "機械手臂與機器人",
+        "require_all": ["手臂"],
+        "require_any": ["機械手臂", "機器人", "Robot", "六軸", "四軸", "SCARA"]
+      },
+      {
+        "skill_name": "機器視覺與感測",
+        "require_all": ["視覺"],
+        "require_any": ["AOI", "機器視覺", "感測器", "Sensor", "影像辨識", "Machine Vision"]
+      },
+      {
+        "skill_name": "自動控制配電",
+        "require_all": ["配電"],
+        "require_any": ["配電盤", "控制箱", "儀控", "線路", "AutoCAD Electrical"]
+      }
+        ]
+      },
+      { "no": "65", "des": "化工與材料研發", "n": [{
+        "skill_name": "材料配方與開發",
+        "require_all": ["配方"],
+        "require_any": ["材料", "高分子", "研發", "改良", "調配"]
+      },
+      {
+        "skill_name": "化學分析與檢測",
+        "require_all": [],
+        "require_any": ["化學分析", "光譜", "層析", "GC", "HPLC", "FTIR"]
+      },
+      {
+        "skill_name": "高分子與複合材料",
+        "require_all": [],
+        "require_any": ["高分子", "塑膠", "橡膠", "複合材料", "樹脂", "Polymer"]
+      },
+      {
+        "skill_name": "半導體與電子材料",
+        "require_all": ["材料"],
+        "require_any": ["半導體", "光電", "封裝", "靶材", "光阻"]
+      },
+      {
+        "skill_name": "化學合成與反應製程",
+        "require_all": ["合成"],
+        "require_any": ["化學", "製程", "觸媒", "有機", "無機"]
+      }] }
     ]
   },
   {
     "no": "7",
     "des": "專業與醫療服務",
     "n": [
-      { "no": "71", "des": "醫療照護與儀器操作", "n": [] },
-      { "no": "72", "des": "藥品與臨床試驗", "n": [] },
-      { "no": "73", "des": "金融與投資分析", "n": [] },
-      { "no": "74", "des": "稅務與審計", "n": [] },
-      { "no": "75", "des": "專利與智財權管理", "n": [] }
-    ]
-  },
+      {
+        "no": "71",
+        "des": "醫療照護與儀器操作",
+        "n": [
+          {
+        "skill_name": "臨床護理與衛教",
+        "require_all": ["護理"],
+        "require_any": ["照護", "臨床", "衛教", "病房", "急重症"]
+      },
+      {
+        "skill_name": "醫療儀器與設備操作",
+        "require_all": ["儀器"],
+        "require_any": ["醫療", "操作", "維護", "消毒", "滅菌"]
+      },
+      {
+        "skill_name": "急救與生命支持",
+        "require_all": [],
+        "require_any": ["ACLS", "BLS", "CPR", "急救", "生命徵象", "急診"]
+      },
+      {
+        "skill_name": "醫學影像與放射操作",
+        "require_all": ["放射"],
+        "require_any": ["X光", "超音波", "MRI", "CT", "攝影", "醫事放射"]
+      },
+      {
+        "skill_name": "復健與物理治療",
+        "require_all": ["復健"],
+        "require_any": ["物理治療", "職能治療", "運動治療", "徒手", "評估"]
+      }
+        ]
+      },
+      { "no": "72", "des": "藥品與臨床試驗", "n": [{
+        "skill_name": "臨床試驗執行與管理",
+        "require_all": ["臨床"],
+        "require_any": ["試驗", "CRA", "CRC", "GCP", "收案", "IRB"]
+      },
+      {
+        "skill_name": "藥品查驗與法規登記",
+        "require_all": [],
+        "require_any": ["查驗登記", "藥證", "TFDA", "FDA", "RA", "法規專員"]
+      },
+      {
+        "skill_name": "藥物安全監視",
+        "require_all": ["藥物"],
+        "require_any": ["安全", "通報", "不良反應", "PV", "Pharmacovigilance"]
+      },
+      {
+        "skill_name": "醫藥業務與代表",
+        "require_all": ["醫藥"],
+        "require_any": ["業務", "代表", "推廣", "MR", "拜訪"]
+      },
+      {
+        "skill_name": "藥廠品管與規範",
+        "require_all": ["藥廠"],
+        "require_any": ["品保", "品管", "GMP", "PIC/S", "GDP", "確效"]
+      }] },
+      { "no": "73", "des": "金融與投資分析", "n": [{
+        "skill_name": "總體經濟與產業研究",
+        "require_all": ["研究"],
+        "require_any": ["總經", "產業", "趨勢", "個股", "報告"]
+      },
+      {
+        "skill_name": "財務報表與估值分析",
+        "require_all": ["財報"],
+        "require_any": ["分析", "模型", "預測", "三大報表", "估值"]
+      },
+      {
+        "skill_name": "投資組合與資產配置",
+        "require_all": ["投資"],
+        "require_any": ["組合", "配置", "風險", "避險", "基金"]
+      },
+      {
+        "skill_name": "量化與程式交易",
+        "require_all": ["交易"],
+        "require_any": ["操盤", "量化", "演算法", "程式交易", "籌碼"]
+      },
+      {
+        "skill_name": "金融法規與洗錢防制",
+        "require_all": [],
+        "require_any": ["洗錢防制", "AML", "KYC", "金融法規", "內控", "法遵"]
+      }] },
+      {
+        "no": "74",
+        "des": "稅務與審計",
+        "n": [
+          {
+        "skill_name": "查帳與審計簽證",
+        "require_all": ["查帳"],
+        "require_any": ["審計", "簽證", "底稿", "會計師"]
+      },
+      {
+        "skill_name": "稅務申報與遵循",
+        "require_all": ["申報"],
+        "require_any": ["營所稅", "營業稅", "各類所得", "扣繳", "稅務"]
+      },
+      {
+        "skill_name": "內部控制與稽核",
+        "require_all": ["內控"],
+        "require_any": ["稽核", "內部控制", "九大循環", "風險", "SOX"]
+      },
+      {
+        "skill_name": "移轉訂價與國際租稅",
+        "require_all": [],
+        "require_any": ["移轉訂價", "TP報告", "國際租稅", "跨國稅務", "BEPS"]
+      },
+      {
+        "skill_name": "稅務諮詢與規劃",
+        "require_all": ["稅務"],
+        "require_any": ["諮詢", "規劃", "行政救濟", "復查", "訴願"]
+      }
+            ]
+          },
+          { "no": "75", "des": "專利與智財權管理", "n": [{
+        "skill_name": "專利檢索與分析",
+        "require_all": ["專利"],
+        "require_any": ["檢索", "分析", "前案", "佈局", "探勘"]
+      },
+      {
+        "skill_name": "專利說明書撰寫與答辯",
+        "require_all": ["說明書"],
+        "require_any": ["撰寫", "答辯", "OA", "核駁", "申請"]
+      },
+      {
+        "skill_name": "商標與著作權申請",
+        "require_all": ["商標"],
+        "require_any": ["申請", "註冊", "延展", "著作權", "版權"]
+      },
+      {
+        "skill_name": "專利侵權與迴避設計",
+        "require_all": ["侵權"],
+        "require_any": ["訴訟", "鑑定", "迴避設計", "警告函", "爭議"]
+      },
+      {
+        "skill_name": "智財管理與技轉授權",
+        "require_all": ["智財"],
+        "require_any": ["管理", "授權", "TIPS", "技轉", "盤點"]
+      }] }
+        ]
+      },
   {
     "no": "8",
     "des": "民生與休閒服務",

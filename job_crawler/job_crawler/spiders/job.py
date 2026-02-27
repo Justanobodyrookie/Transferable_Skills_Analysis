@@ -33,7 +33,7 @@ class Job_marketSpider(scrapy.Spider):
         try:
             conn = mysql.connector.connect(**self.db_config)
             cursor = conn.cursor()
-            cursor.execute('select code from regions where level = 3')
+            cursor.execute("select code from regions where level = 2 and name not in ('台北市', '新北市')")
             regions_code = [row[0] for row in cursor.fetchall()]
             cursor.execute('select code from job_category where level = 2')
             job_category = [row[0] for row in cursor.fetchall()]
