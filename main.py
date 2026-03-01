@@ -2,6 +2,7 @@ import re
 import json
 import os
 import boto3
+import traceback
 import mysql.connector
 from datetime import datetime
 from dotenv import load_dotenv
@@ -51,12 +52,15 @@ try:
 		sk = json.load(f)
 	sql_get_skills = """select lower(name), id from skills"""
 	sql_get_jobskills = """select job_code, id from jobs"""
-	sql_insert_jobs_skills = """insert ignore into jobs_skills (job_id, skills_id) values (%s, %s)"""
+	sql_insert_jobs_skills = """insert ignore into job_skills (job_id, skills_id) values (%s, %s)"""
+	cursor.execute(sql_get_skills)
+	skill_dict = {row[0]: row[1] for row in cursor.fetchall()}
 	raw_job_skills_list = []
 	for page in pages:
 		if 'Contents' in page:
 			for obj in page['Contents']:
 				s = obj['Key']
+				current_job_skills = []
 				file = s3.get_object(Bucket=bucket_name, Key=s)
 				fi = file['Body'].read().decode('utf-8')
 				js_fi = json.loads(fi)
@@ -80,12 +84,15 @@ try:
 				s10 = js_fi['raw_data']['s10']
 				job_des = [w.lower() for w in eng_wd]
 				job_tools = [a.lower() for a in eng_wt]
+				raw = js_fi['raw_data']
+				jan = raw.get('jobAddrNoDesc') or ''
+				ja = raw.get('jobAddress') or ''
 				# jobs
 				region = js_fi['region_code']
 				job_edu = js_fi['raw_data']['optionEdu']
 				job_code = js_fi['job_code']
 				job_title = js_fi['raw_data']['jobName']
-				location = js_fi['raw_data']['jobAddrNoDesc']['jobAddress']
+				location = jan + ja
 				response_pr = js_fi['raw_data']['hrBehaviorPR']
 				apply_num = js_fi['raw_data']['applyCnt']
 				salary_type = s10_map.get(s10, 0)
@@ -115,6 +122,8 @@ try:
 					)
 				raw_job_list.append(tjt)
 				company_list.append((company_no, company_name))
+				combined_text = current_des + ' ' + current_tools
+				combined_lower = combined_text.lower()
 				for sk1 in sk:
 					a = sk1['des']
 					if 'n' in sk1:
@@ -128,25 +137,26 @@ try:
 											pattern = r'\b' + safe_lang + r'(?!\w)'
 										else:
 											pattern = r'\b' + sk3 + r'\b'
-										match = re.findall(pattern, current_des, re.IGNORECASE)
+										match = re.findall(pattern, combined_text, re.IGNORECASE)
 										if match:
-											item = (b, sk3)
-											if item not in current_job_skills:
-												current_job_skills.append(item)
+											if sk3.lower() not in current_job_skills:
+												current_job_skills.append(sk3.lower())
 									else:
 										c = sk3.get('skill_name', '')
 										d = sk3.get('require_all', [])
 										e = sk3.get('require_any', [])
-										if all(word.lower() in curr_lower for word in d):
-											match_e = [word for word in e if word.lower() in curr_lower]
+										if all(word.lower() in combined_lower for word in d):
+											match_e = [word for word in e if word.lower() in combined_lower]
 											for word in match_e:
 												if d and match_e:
 													plus = d[0] + word
-													if item not in current_job_skills:
+													if plus.lower() not in current_job_skills:
 														current_job_skills.append(plus.lower())
 												elif match_e:
 													plus = match_e[0]
-													current_job_skills.append(plus.lower())
+													if plus.lower() not in current_job_skills:
+														current_job_skills.append(plus.lower())
+				raw_job_skills_list.append((job_code, current_job_skills))
 				count = count + 1
 				if count % 1000 == 0:
 					cursor.executemany(sql_insert_company, company_list)
@@ -163,10 +173,6 @@ try:
 							jl.append(fi)
 					cursor.executemany(sql_insert_jobs, jl)
 					# skills
-					cursor.execute(sql_get_skills)
-					skill_dict = {row[0]: row[1] for row in cursor.fetchall()}
-					current_job_skills = []
-					raw_job_skills_list.append((job_code, current_job_skills))
 					cursor.execute(sql_get_jobskills)
 					job_dict = {row[0]: row[1] for row in cursor.fetchall()}
 					js_list = []
@@ -188,6 +194,7 @@ try:
 					print(f"已處理 {count} 筆資料")
 	if len(raw_job_list) > 0:
 		cursor.executemany(sql_insert_company, company_list)
+		# company
 		cursor.execute(sql_get_company_id)
 		all_company = cursor.fetchall()
 		company_dict = {row[0]: row[1] for row in all_company}
@@ -199,12 +206,29 @@ try:
 				fi = (real_id,) + rj[1:]
 				jl.append(fi)
 		cursor.executemany(sql_insert_jobs, jl)
+		# skills
+		cursor.execute(sql_get_jobskills)
+		job_dict = {row[0]: row[1] for row in cursor.fetchall()}
+		js_list = []
+		for rjs in raw_job_skills_list:
+			jc = rjs[0]
+			skill_names = rjs[1]
+			real_job_id = job_dict.get(jc)
+			if real_job_id:
+				for s_name in skill_names:
+					real_skill_id = skill_dict.get(s_name)
+					if real_skill_id:
+						js_list.append((real_job_id, real_skill_id))
+		cursor.executemany(sql_insert_jobs_skills, js_list)
 		conn.commit()
 		company_list.clear()
 		raw_job_list.clear()
+		js_list.clear()
+		raw_job_skills_list.clear()
 		print(f"尾數寫入完成")
 except Exception as e:
 	print(f"匯入時發生錯誤: {e}")
+	traceback.print_exc()
 finally:
 	if conn and conn.is_connected():
 		if cursor:
