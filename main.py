@@ -44,10 +44,10 @@ try:
 	# jobs
 	s10_map = {10: 1, 20: 2, 30: 3, 40: 4, 50: 5, 60: 6}
 	raw_job_list = []
-	sql_insert_jobs = """insert ignore into jobs (company_id, region_code, job_code, job_title, location, response_pr, apply_num, salary_type, salary_min, salary_max, remote, job_released, no_exper, link, snapshot_date) 
-		values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+	sql_insert_jobs = """insert ignore into jobs (company_id, region_code, edu_id, job_code, job_title, location, response_pr, apply_num, salary_type, salary_min, salary_max, remote, job_released, no_exper, link, snapshot_date) 
+		values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 	"""
-	# jobs_skills
+	# job_skills
 	with open('skills.txt', 'r', encoding='utf-8') as f:
 		sk = json.load(f)
 	sql_get_skills = """select lower(name), id from skills"""
@@ -56,6 +56,13 @@ try:
 	cursor.execute(sql_get_skills)
 	skill_dict = {row[0]: row[1] for row in cursor.fetchall()}
 	raw_job_skills_list = []
+	# industries
+	sql_insert_industries = """insert ignore into industries (ind_name) values (%s)"""
+	ind_list = []
+	# job_category_relations
+	sql_insert_job_category_relations = """insert ignore into job_category_relations"""
+	sql_get_jobcategory = """select parent_code, name from job_category where level = '3'"""
+	sql_get_jobs_cate = """select """
 	for page in pages:
 		if 'Contents' in page:
 			for obj in page['Contents']:
@@ -89,6 +96,7 @@ try:
 				ja = raw.get('jobAddress') or ''
 				# jobs
 				region = js_fi['region_code']
+				edu = js_fi['raw_data']['optionEdu'][0]
 				job_edu = js_fi['raw_data']['optionEdu']
 				job_code = js_fi['job_code']
 				job_title = js_fi['raw_data']['jobName']
@@ -114,9 +122,11 @@ try:
 				# company
 				company_no = js_fi['raw_data']['custNo']
 				company_name = js_fi['raw_data']['custName']
-				# -----
+				# industries
+				ind_name = js_fi['raw_data']['coIndustryDesc']
+				ind_list.append((ind_name, ))
 				tjt = (
-    				company_no, region, job_code, job_title, location, 
+    				company_no, region, edu, job_code, job_title, location, 
     				response_pr, apply_num, salary_type, salary_min, salary_max, 
     				remote, job_released, no_exper, job_link, snapshot_date
 					)
@@ -186,6 +196,7 @@ try:
 								if real_skill_id:
 									js_list.append((real_job_id, real_skill_id))
 					cursor.executemany(sql_insert_jobs_skills, js_list)
+					cursor.executemany(sql_insert_industries, ind_list)
 					conn.commit()
 					company_list.clear()
 					raw_job_list.clear()
@@ -220,6 +231,7 @@ try:
 					if real_skill_id:
 						js_list.append((real_job_id, real_skill_id))
 		cursor.executemany(sql_insert_jobs_skills, js_list)
+		cursor.executemany(sql_insert_industries, ind_list)
 		conn.commit()
 		company_list.clear()
 		raw_job_list.clear()
