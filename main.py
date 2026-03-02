@@ -39,7 +39,7 @@ try:
 	cursor = conn.cursor()
 	jobs_list = []
 	# company
-	sql_insert_company = """insert ignore into company (custNo, name) values (%s, %s)"""
+	sql_insert_company = """insert ignore into company (custNo, ind_code, name) values (%s, %s, %s)"""
 	sql_get_company_id = """select custNo, id from company"""
 	# jobs
 	s10_map = {10: 1, 20: 2, 30: 3, 40: 4, 50: 5, 60: 6}
@@ -57,7 +57,7 @@ try:
 	skill_dict = {row[0]: row[1] for row in cursor.fetchall()}
 	raw_job_skills_list = []
 	# industries
-	sql_insert_industries = """insert ignore into industries (ind_name) values (%s)"""
+	sql_insert_industries = """insert ignore into industries (ind_code, ind_name) values (%s, %s)"""
 	ind_list = []
 	# job_category_relations
 	sql_insert_job_category_relations = """insert ignore into job_category_relations"""
@@ -123,15 +123,16 @@ try:
 				company_no = js_fi['raw_data']['custNo']
 				company_name = js_fi['raw_data']['custName']
 				# industries
+				ind_code = js_fi['raw_data']['coIndustry']
 				ind_name = js_fi['raw_data']['coIndustryDesc']
-				ind_list.append((ind_name, ))
+				ind_list.append((ind_code, ind_name))
 				tjt = (
     				company_no, region, edu, job_code, job_title, location, 
     				response_pr, apply_num, salary_type, salary_min, salary_max, 
     				remote, job_released, no_exper, job_link, snapshot_date
 					)
 				raw_job_list.append(tjt)
-				company_list.append((company_no, company_name))
+				company_list.append((company_no, ind_code, company_name))
 				combined_text = current_des + ' ' + current_tools
 				combined_lower = combined_text.lower()
 				for sk1 in sk:
