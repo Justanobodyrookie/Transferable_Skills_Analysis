@@ -60,9 +60,14 @@ try:
 	sql_insert_industries = """insert ignore into industries (ind_code, ind_name) values (%s, %s)"""
 	ind_list = []
 	# job_category_relations
-	sql_insert_job_category_relations = """insert ignore into job_category_relations"""
-	sql_get_jobcategory = """select parent_code, name from job_category where level = '3'"""
-	sql_get_jobs_cate = """select """
+	raw_job_cate = []
+	sql_insert_job_category_relations = """insert ignore into job_category_relations (job_id, category_code) values (%s, %s)"""
+	# job_benefits
+	sql_insert_job_benefits = """insert ignore into job_benefits (job_id, be_code) values (%s, %s)"""
+	raw_job_benefits = []
+	# job_languages
+	sql_insert_job_languages = """insert ignore into job_languages (job_id, language_id, speak, listen, reading, writing) values (%s, %s, %s, %s, %s, %s)"""
+	raw_job_languages = []
 	for page in pages:
 		if 'Contents' in page:
 			for obj in page['Contents']:
@@ -168,8 +173,25 @@ try:
 													if plus.lower() not in current_job_skills:
 														current_job_skills.append(plus.lower())
 				raw_job_skills_list.append((job_code, current_job_skills))
+				# job_category
+				for jc in js_fi['raw_data']['jobCat']:
+					raw_job_cate.append((job_code, jc))
+				# job_benefits
+				for jb in js_fi['raw_data']['tags']:
+					raw_job_benefits.append((job_code, jb))
+				# job_languages
+				job_lang = js_fi['raw_data'].get('languageRequirements') or []
+				for jl in job_lang:
+					jl_id = jl.get('language')
+					ab = jl.get('ability', {})
+					jl_speak = ab.get('speaking')
+					jl_listen = ab.get('listening')
+					jl_read = ab.get('reading')
+					jl_write = ab.get('writing')
+					raw_job_languages.append((job_code, jl_id, jl_speak, jl_listen, jl_read, jl_write))
 				count = count + 1
 				if count % 1000 == 0:
+					cursor.executemany(sql_insert_industries, ind_list)
 					cursor.executemany(sql_insert_company, company_list)
 					# company
 					cursor.execute(sql_get_company_id)
@@ -196,15 +218,50 @@ try:
 								real_skill_id = skill_dict.get(s_name)
 								if real_skill_id:
 									js_list.append((real_job_id, real_skill_id))
+					jcr_list = []
+					for rjc in raw_job_cate:
+						jc_code = rjc[0]
+						cat_val = rjc[1]
+						real_job_id = job_dict.get(jc_code)
+						if real_job_id:
+							jcr_list.append((real_job_id, cat_val))
+					jb_list = []
+					for rjb in raw_job_benefits:
+						jb_code = rjb[0]
+						be_code = rjb[1]
+						real_job_id = job_dict.get(jb_code)
+						if real_job_id:
+							jb_list.append((real_job_id, be_code))
+					jl_list = []
+					for rjl in raw_job_languages:
+						jl_code = rjl[0]
+						rjl_id = rjl[1]
+						speak_l = rjl[2]
+						listen_l = rjl[3]
+						read_l = rjl[4]
+						write_l = rjl[5]
+						real_job_id = job_dict.get(jl_code)
+						if real_job_id:
+							jl_list.append((real_job_id, rjl_id, speak_l, listen_l, read_l, write_l))
 					cursor.executemany(sql_insert_jobs_skills, js_list)
-					cursor.executemany(sql_insert_industries, ind_list)
+					cursor.executemany(sql_insert_job_category_relations, jcr_list)
+					cursor.executemany(sql_insert_job_benefits, jb_list)
+					cursor.executemany(sql_insert_job_languages, jl_list)
 					conn.commit()
 					company_list.clear()
 					raw_job_list.clear()
 					js_list.clear()
 					raw_job_skills_list.clear()
+					raw_job_cate.clear()
+					ind_list.clear()
+					jcr_list.clear()
+					raw_job_benefits.clear()
+					jb_list.clear()
+					raw_job_languages.clear()
+					jl_list.clear()
 					print(f"已處理 {count} 筆資料")
 	if len(raw_job_list) > 0:
+		cursor.executemany(sql_insert_industries, ind_list)
 		cursor.executemany(sql_insert_company, company_list)
 		# company
 		cursor.execute(sql_get_company_id)
@@ -231,13 +288,47 @@ try:
 					real_skill_id = skill_dict.get(s_name)
 					if real_skill_id:
 						js_list.append((real_job_id, real_skill_id))
+		jcr_list = []
+		for rjc in raw_job_cate:
+			jc_code = rjc[0]
+			cat_val = rjc[1]
+			real_job_id = job_dict.get(jc_code)
+			if real_job_id:
+				jcr_list.append((real_job_id, cat_val))
+		jb_list = []
+		for rjb in raw_job_benefits:
+			jb_code = rjb[0]
+			be_code = rjb[1]
+			real_job_id = job_dict.get(jb_code)
+			if real_job_id:
+				jb_list.append((real_job_id, be_code))
+		jl_list = []
+		for rjl in raw_job_languages:
+			jl_code = rjl[0]
+			rjl_id = rjl[1]
+			speak_l = rjl[2]
+			listen_l = rjl[3]
+			read_l = rjl[4]
+			write_l = rjl[5]
+			real_job_id = job_dict.get(jl_code)
+			if real_job_id:
+				jl_list.append((real_job_id, rjl_id, speak_l, listen_l, read_l, write_l))
 		cursor.executemany(sql_insert_jobs_skills, js_list)
-		cursor.executemany(sql_insert_industries, ind_list)
+		cursor.executemany(sql_insert_job_category_relations, jcr_list)
+		cursor.executemany(sql_insert_job_benefits, jb_list)
+		cursor.executemany(sql_insert_job_languages, jl_list)
 		conn.commit()
 		company_list.clear()
 		raw_job_list.clear()
 		js_list.clear()
 		raw_job_skills_list.clear()
+		raw_job_cate.clear()
+		ind_list.clear()
+		jcr_list.clear()
+		raw_job_benefits.clear()
+		jb_list.clear()
+		raw_job_languages.clear()
+		jl_list.clear()
 		print(f"尾數寫入完成")
 except Exception as e:
 	print(f"匯入時發生錯誤: {e}")
