@@ -20,7 +20,7 @@ def load_data(query):
   columns = [col[0] for col in cursor.description]
   cursor.close()
   conn.close()
-  return pd.DataFrame(data, columns=columns)
+  return pd.DataFrame(data_list, columns=columns)
 st.title("測試")
 test_sql = "SELECT * FROM industries LIMIT 10;"
 df = load_data(test_sql)
