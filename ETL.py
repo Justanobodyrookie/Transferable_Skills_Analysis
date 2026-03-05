@@ -20,7 +20,7 @@ endpoint = os.getenv('MINIO_ENDPOINT')
 access_key = os.getenv('MINIO_USER')
 secret_key = os.getenv('MINIO_PASSWORD')
 bucket_name = 'job-data'
-prefix = '2026-02-21/6001001001/'
+prefix = ''
 s3 = boto3.client(
     's3',
     endpoint_url=endpoint,
