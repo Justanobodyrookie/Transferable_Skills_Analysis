@@ -32,11 +32,18 @@ def parse_json():
 						else:
 							l3_tuple = (None, l2['no'], l3['skill_name'], 3)
 							result.append(l3_tuple)
-							if 'require_any' in l3:
-								for i in l3['require_any']:
+							req_all = l3.get('require_all', [])
+							req_any = l3.get('require_any', [])
+							if req_all and req_any:
+								for a in req_all:
+									for i in req_any:
+										mix_skill = a + i
+										result.append((None, l2['no'], mix_skill, 3))
+							elif req_any:
+								for i in req_any:
 									result.append((None, l2['no'], i, 3))
-							if 'require_all' in l3:
-								for a in l3['require_all']:
+							elif req_all:
+								for a in req_all:
 									result.append((None, l2['no'], a, 3))
 	return result
 def save_db(datalist):
