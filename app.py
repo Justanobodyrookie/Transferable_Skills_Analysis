@@ -33,7 +33,7 @@ def quote(filepath):
 st.title("測試")
 ind_df = load_data("select ind_name from industries where ind_name is not null;")
 ind_list = ind_df['ind_name'].tolist()
-selected_ind = st.sidebar.selectbox("請選擇天命", ind_list)
+selected_ind = st.sidebar.selectbox("請選擇產業", ind_list)
 dy_sql = f"""
   select c.custNo, c.name as 公司名稱
   from company c

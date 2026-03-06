@@ -28,12 +28,17 @@ def parse_json():
 					for l3 in l2['n']:
 						if isinstance(l3, str):
 							l3_tuple = (None, l2['no'], l3, 3)
+							result.append(l3_tuple)
 						else:
 							l3_tuple = (None, l2['no'], l3['skill_name'], 3)
-						result.append(l3_tuple)
-
+							result.append(l3_tuple)
+							if 'require_any' in l3:
+								for i in l3['require_any']:
+									result.append((None, l2['no'], i, 3))
+							if 'require_all' in l3:
+								for a in l3['require_all']:
+									result.append((None, l2['no'], a, 3))
 	return result
-
 def save_db(datalist):
 	conn = None
 	try:
