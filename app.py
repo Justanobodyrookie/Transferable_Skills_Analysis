@@ -14,10 +14,10 @@ db_config = {
   'database': os.getenv('MYSQL_DATABASE')
 }
 @st.cache_data
-def load_data(query):
+def load_data(query, params=None):
     conn = mysql.connector.connect(**db_config)
     cursor = conn.cursor()
-    cursor.execute(query)
+    cursor.execute(query, params)
     data_list = cursor.fetchall()
     columns = [col[0] for col in cursor.description]
     cursor.close()
@@ -50,11 +50,11 @@ last_sql = f"""
 base_sql = f"""
     with rank_spell as (
         select
-            row_number() over(partition by s2.name order by count (disinct j.job_code) desc) as 排名,
+            row_number() over(partition by s2.name order by count(distinct j.job_code) desc) as 排名,
             s3.name as 大類,
             s2.name as 中類,
             s.name as 技能名稱,
-            count(disinct j.job_code) as 出現次數
+            count(distinct j.job_code) as 出現次數
         from jobs j
         join job_skills js on j.id = js.job_id
         join skills s on js.skills_id = s.id
@@ -112,7 +112,7 @@ if search_button:
         base_sql = base_sql + " and jc.name = %s"
         glue.append(small_cate)
     if industry != "請選擇":
-        base_sql = base_sql + " and jc.name = %s"
+        base_sql = base_sql + " and i.ind_name = %s"
         glue.append(industry)
     base_sql = base_sql + last_sql   
     f_sql = load_data(base_sql, glue)
