@@ -87,13 +87,13 @@ with col1:
     big_cate = st.selectbox("職務類別", big_opt)
 if big_cate != "請選擇":
   with col2:
-    sql_middle = "select name from job_category where level = 2"
-    middle_opt = db_search(sql_middle)
+    sql_middle = """select j1.name from job_category j1 join job_category j2 on j1.parent_code = j2.code where j2.name = %s"""
+    middle_opt = db_search(sql_middle, params=(big_cate,))
     middle_cate = st.selectbox("職務中項", middle_opt)
     if middle_cate != "請選擇":
         with col3:
-            sql_small = "select name from job_category where level = 3"
-            small_opt = db_search(sql_small)
+            sql_small = """select j1.name from job_category j1 join job_category j2 on j1.parent_code = j2.code where j2.name = %s"""
+            small_opt = db_search(sql_small, params=(middle_cate,))
             small_cate = st.selectbox("職務細項", small_opt)
 with col4:
     sql_industry = "select ind_name from industries"
@@ -105,15 +105,18 @@ with col5:
 if search_button:
     st.write("---")
     st.write(f"目前搜尋條件: 大類:{big_cate} / 中類:{middle_cate} / 小類:{small_cate}")
-    if middle_cate != "請選擇":
-        base_sql = base_sql + " and jc.name = %s"
-        glue.append(middle_cate)
     if small_cate != "請選擇":
         base_sql = base_sql + " and jc.name = %s"
         glue.append(small_cate)
+    elif middle_cate != "請選擇":
+        base_sql = base_sql + " and jc.name = %s"
+        glue.append(middle_cate)
+    elif big_cate != "請選擇":
+        base_sql = base_sql + " and jc.name = %s"
+        glue.append(big_cate)
     if industry != "請選擇":
         base_sql = base_sql + " and i.ind_name = %s"
         glue.append(industry)
     base_sql = base_sql + last_sql   
-    f_sql = load_data(base_sql, glue)
+    f_sql = load_data(base_sql, tuple(glue))
     st.dataframe(f_sql)
