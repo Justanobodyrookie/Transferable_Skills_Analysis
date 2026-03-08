@@ -42,3 +42,5 @@
 9. SQL語法串接的and要記得and的前面空一格，避免語法錯誤
 
 10. @st.cache_data功能不接受會變動的List作為參數, 必須用tuple或list去集合起來
+
+11. 為了隱藏CSV下載功能，注入CSS隱藏

@@ -72,77 +72,103 @@ base_sql = f"""
         left join job_category jc_big on jc_mid.parent_code = jc_big.code
         where 1 = 1
 """
-# if page == '職務技能需求表':
-# 標題
-st.title("職務技能需求表")
-st.markdown("""
-    <style>
-    /* 隱藏 dataframe 右上角整組工具列 */
-    [data-testid="stElementToolbar"] {
-        display: none !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-# 名言佳句
-my_quote = quote('words.json')
-st.markdown(f"> *{my_quote}*")
+if page == '職務技能需求表':
+    # 標題
+    st.title("職務技能需求表")
+    st.markdown("""
+        <style>
+        /* 隱藏 dataframe 右上角整組工具列 */
+        [data-testid="stElementToolbar"] {
+            display: none !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    # 名言佳句
+    my_quote = quote('words.json')
+    st.markdown(f"> *{my_quote}*")
 
-# 按鈕部門
-glue = []
+    # 按鈕部門
+    glue = []
 
-col1, col2, col3, col4, col5 = st.columns([24, 24, 24, 24, 12])
-big_cate = "請選擇"
-middle_cate = "請選擇"
-small_cate = "請選擇"
-industry = "請選擇"
-with col1:
-    sql_big = "select name from job_category where level = 1"
-    big_opt = db_search(sql_big)
-    big_cate = st.selectbox("職務類別", big_opt)
-if big_cate != "請選擇":
-  with col2:
-    sql_middle = """select j1.name from job_category j1 join job_category j2 on j1.parent_code = j2.code where j2.name = %s"""
-    middle_opt = db_search(sql_middle, params=(big_cate,))
-    middle_cate = st.selectbox("職務中項", middle_opt)
-    if middle_cate != "請選擇":
-        with col3:
-            sql_small = """select j1.name from job_category j1 join job_category j2 on j1.parent_code = j2.code where j2.name = %s"""
-            small_opt = db_search(sql_small, params=(middle_cate,))
-            small_cate = st.multiselect("職務細項", small_opt)
-with col4:
-    sql_industry = "select ind_name from industries"
-    industry_opt = db_search(sql_industry)
-    industry = st.selectbox("產業分類", industry_opt)
-with col5:
-    st.markdown("<br>", unsafe_allow_html=True)
-    search_button = st.button("搜尋")
-if search_button:
-    st.write("---")
-    st.write(f"目前搜尋條件: 大類:{big_cate} / 中類:{middle_cate} / 小類:{small_cate}")
-    if small_cate:
-        protect = ', '.join(['%s'] * len(small_cate))
-        base_sql = base_sql + f" and jc_small.name in ({protect})"
-        glue.extend(small_cate)
-        # base_sql = base_sql + " and jc_small.name = %s"
-        # glue.append(small_cate)
-    elif middle_cate != "請選擇":
-        base_sql = base_sql + " and jc_mid.name = %s"
-        glue.append(middle_cate)
-    elif big_cate != "請選擇":
-        base_sql = base_sql + " and jc_big.name = %s"
-        glue.append(big_cate)
-    if industry != "請選擇":
-        base_sql = base_sql + " and i.ind_name = %s"
-        glue.append(industry)
-    base_sql = base_sql + last_sql   
-    f_sql = load_data(base_sql, tuple(glue))
-    f_sql['出現次數'] = pd.to_numeric(f_sql['出現次數'], errors='coerce')
-    f_sql['佔比'] = (f_sql['出現次數'] / f_sql.groupby('中類')['出現次數'].transform('sum') * 100).round(1).astype(str) + '%'
-    skill_count = f_sql[['大類', '中類', '技能名稱']].notnull().sum(axis=1)
-    clean_stuff = (skill_count >= 3) & (f_sql['出現次數'] > 5)
-    f_sql = f_sql[clean_stuff]
-    st.dataframe(f_sql, hide_index=True,column_order=("排名", "大類", "中類", "技能名稱", "佔比"))
-# elif page == '技能適配度檢測'
-#     st.title('技能適配度檢測')
-#     my_quote = quote('words.json')
-#     st.markdown(f"> *{my_quote}*")
+    col1, col2, col3, col4, col5 = st.columns([24, 24, 24, 24, 12])
+    big_cate = "請選擇"
+    middle_cate = "請選擇"
+    small_cate = "請選擇"
+    industry = "請選擇"
+    with col1:
+        sql_big = "select name from job_category where level = 1"
+        big_opt = db_search(sql_big)
+        big_cate = st.selectbox("職務類別", big_opt)
+    if big_cate != "請選擇":
+      with col2:
+        sql_middle = """select j1.name from job_category j1 join job_category j2 on j1.parent_code = j2.code where j2.name = %s"""
+        middle_opt = db_search(sql_middle, params=(big_cate,))
+        middle_cate = st.selectbox("職務中項", middle_opt)
+        if middle_cate != "請選擇":
+            with col3:
+                sql_small = """select j1.name from job_category j1 join job_category j2 on j1.parent_code = j2.code where j2.name = %s"""
+                small_opt = db_search(sql_small, params=(middle_cate,))
+                small_cate = st.multiselect("職務細項", small_opt)
+    with col4:
+        sql_industry = "select ind_name from industries"
+        industry_opt = db_search(sql_industry)
+        industry = st.selectbox("產業分類", industry_opt)
+    with col5:
+        st.markdown("<br>", unsafe_allow_html=True)
+        search_button = st.button("搜尋")
+    if search_button:
+        st.write("---")
+        st.write(f"目前搜尋條件: 大類:{big_cate} / 中類:{middle_cate} / 小類:{small_cate}")
+        if small_cate:
+            protect = ', '.join(['%s'] * len(small_cate))
+            base_sql = base_sql + f" and jc_small.name in ({protect})"
+            glue.extend(small_cate)
+            # base_sql = base_sql + " and jc_small.name = %s"
+            # glue.append(small_cate)
+        elif middle_cate != "請選擇":
+            base_sql = base_sql + " and jc_mid.name = %s"
+            glue.append(middle_cate)
+        elif big_cate != "請選擇":
+            base_sql = base_sql + " and jc_big.name = %s"
+            glue.append(big_cate)
+        if industry != "請選擇":
+            base_sql = base_sql + " and i.ind_name = %s"
+            glue.append(industry)
+        base_sql = base_sql + last_sql   
+        f_sql = load_data(base_sql, tuple(glue))
+        f_sql['出現次數'] = pd.to_numeric(f_sql['出現次數'], errors='coerce')
+        f_sql['佔比'] = (f_sql['出現次數'] / f_sql.groupby('中類')['出現次數'].transform('sum') * 100).round(1).astype(str) + '%'
+        skill_count = f_sql[['大類', '中類', '技能名稱']].notnull().sum(axis=1)
+        clean_stuff = (skill_count >= 3) & (f_sql['出現次數'] > 5)
+        f_sql = f_sql[clean_stuff]
+        st.dataframe(f_sql, hide_index=True,column_order=("排名", "大類", "中類", "技能名稱", "佔比"))
+elif page == '技能適配度檢測':
+    st.title('技能適配度檢測')
+    st.markdown("""
+        <style>
+        /* 隱藏 dataframe 右上角整組工具列 */
+        [data-testid="stElementToolbar"] {
+            display: none !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    my_quote = quote('words.json')
+    st.markdown(f"> *{my_quote}*")
+    # 按鈕部門
+    glue = []
+    col1, col2, col3, col4, col5 = st.columns(5)
+    with col1:
+        select_mid = st.multiselect("技能中類", ['請選擇', '測試'])
+    with col2:
+        select_small = st.multiselect("技能細項", ['請選擇', '測試'])
+    with col3:
+        select_langs = st.multiselect('語言', ['英文', '日文'])
+    with col4:
+        user_lang_level = st.multiselect('程度', ['不拘', '略懂', '中等', '精通'])
+    with col5:
+        st.markdown("<br>", unsafe_allow_html=True)
+        analyze_button = st.button("開始分析")
+    if analyze_button:
+        st.write('---')
+        st.write(f"您的技能包: {select_small}")
+        st.write(f"您的語言能力: {select_langs} ({user_lang_level})")
