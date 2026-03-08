@@ -13,7 +13,7 @@ db_config = {
   'password': os.getenv('MYSQL_ROOT_PASSWORD'),
   'database': os.getenv('MYSQL_DATABASE')
 }
-@st.cache_data
+@st.cache_data(ttl=3600)
 def load_data(query, params=None):
     conn = mysql.connector.connect(**db_config)
     cursor = conn.cursor()
@@ -30,6 +30,7 @@ def quote(filepath):
     for b in aa:
         qq.append(b)
     return random.choice(qq)
+@st.cache_data(ttl=3600)
 def db_search(query, params=None):
     conn = mysql.connector.connect(**db_config)
     df = pd.read_sql(query, conn, params=params)
@@ -42,7 +43,7 @@ ind_list = ind_df['ind_name'].tolist()
 last_sql = f"""
     group by s3.name, s2.name, s.name
     )
-    select 排名, 大類, 中類, 技能名稱
+    select 排名, 大類, 中類, 技能名稱, 出現次數
     from rank_spell
     where 排名 <= 10
     order by 中類, 排名;
@@ -64,6 +65,9 @@ base_sql = f"""
         join job_category jc on jc.code = jcr.category_code
         join company c on j.company_id = c.id
         join industries i on c.ind_code = i.ind_code
+        join job_category jc_small on jc_small.code = jcr.category_code
+        left join job_category jc_mid on jc_small.parent_code = jc_mid.code
+        left join job_category jc_big on jc_mid.parent_code = jc_big.code
         where 1 = 1
 """
 
@@ -76,7 +80,7 @@ st.markdown(f"> *{my_quote}*")
 # 按鈕部門
 glue = []
 
-col1, col2, col3, col4, col5 = st.columns(5)
+col1, col2, col3, col4, col5 = st.columns([24, 24, 24, 24, 12])
 big_cate = "請選擇"
 middle_cate = "請選擇"
 small_cate = "請選擇"
@@ -106,17 +110,22 @@ if search_button:
     st.write("---")
     st.write(f"目前搜尋條件: 大類:{big_cate} / 中類:{middle_cate} / 小類:{small_cate}")
     if small_cate != "請選擇":
-        base_sql = base_sql + " and jc.name = %s"
+        base_sql = base_sql + " and jc_small.name = %s"
         glue.append(small_cate)
     elif middle_cate != "請選擇":
-        base_sql = base_sql + " and jc.name = %s"
+        base_sql = base_sql + " and jc_mid.name = %s"
         glue.append(middle_cate)
     elif big_cate != "請選擇":
-        base_sql = base_sql + " and jc.name = %s"
+        base_sql = base_sql + " and jc_big.name = %s"
         glue.append(big_cate)
     if industry != "請選擇":
         base_sql = base_sql + " and i.ind_name = %s"
         glue.append(industry)
     base_sql = base_sql + last_sql   
     f_sql = load_data(base_sql, tuple(glue))
-    st.dataframe(f_sql)
+    f_sql['出現次數'] = pd.to_numeric(f_sql['出現次數'], errors='coerce')
+    f_sql['佔比'] = (f_sql['出現次數'] / f_sql.groupby('中類')['出現次數'].transform('sum') * 100).round(1).astype(str) + '%'
+    skill_count = f_sql[['大類', '中類', '技能名稱']].notnull().sum(axis=1)
+    clean_stuff = (skill_count >= 3) & (f_sql['出現次數'] > 5)
+    f_sql = f_sql[clean_stuff]
+    st.dataframe(f_sql, hide_index=True,column_order=("排名", "大類", "中類", "技能名稱", "佔比"))
