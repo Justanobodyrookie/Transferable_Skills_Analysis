@@ -44,3 +44,7 @@
 10. @st.cache_data功能不接受會變動的List作為參數, 必須用tuple或list去集合起來
 
 11. 為了隱藏CSV下載功能，注入CSS隱藏
+
+12. 用dict去解決不同語言程度問題
+
+13. 在執行整個重新寫入時，須注意自己是否有新的auto_increment的設定, alter table skills auto_increment = 1000;
