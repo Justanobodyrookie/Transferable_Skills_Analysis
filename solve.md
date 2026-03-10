@@ -48,3 +48,5 @@
 12. 用dict去解決不同語言程度問題
 
 13. 在執行整個重新寫入時，須注意自己是否有新的auto_increment的設定, alter table skills auto_increment = 1000;
+
+14. 去除爬蟲裡的try...except，因為已開啟extensions防護罩

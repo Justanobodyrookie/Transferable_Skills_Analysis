@@ -27,3 +27,7 @@ AUTOTHROTTLE_START_DELAY = 1
 AUTOTHROTTLE_MAX_DELAY = 10
 AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 LOG_LEVEL = 'INFO'
+
+EXTENSIONS = {
+    'job_crawler.extensions.ErrorEmailExtension': 500, # your_project 換成你實際的資料夾名稱
+}
