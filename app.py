@@ -178,7 +178,10 @@ elif page == '技能適配度檢測':
         else:
             select_small = st.multiselect("技能細項", [])
     with col3:
-        select_langs = st.multiselect('語言', ['英文', '日文'])
+        sql_lang = "select name from languages"
+        land_df = load_data(sql_lang)
+        lang_list = land_df['name'].tolist()
+        select_langs = st.multiselect('語言', lang_list)
         user_lang_levels = {}
     with col4:
         if select_langs:
@@ -191,7 +194,7 @@ elif page == '技能適配度檢測':
         st.markdown("<br>", unsafe_allow_html=True)
         analyze_button = st.button("開始分析")
     if analyze_button:
-        if not select_small or not select_langs:
+        if not select_small and not select_langs:
             st.warning("請至少選擇一項技能與語言")
             st.stop()
         st.write('---')
@@ -234,7 +237,7 @@ elif page == '技能適配度檢測':
                 join skills s on js.skills_id = s.id
                 where s.name in ({defense})
                 group by j.id, j.no_exper
-                having count(distinct s.name) = {len(select_small)}
+                having count(distinct s.name) >= 1
                 ),
             match_langs as (
                 select jl.job_id
@@ -242,7 +245,7 @@ elif page == '技能適配度檢測':
                 join languages l on jl.language_id = l.id
                 where {final_lang_sql}
                 group by jl.job_id
-                having count(l.name) = {len(select_langs)}
+                having count(l.name) >= 1
             )
                 select
                     count(mj.id) as 總職缺數,
@@ -268,7 +271,7 @@ elif page == '技能適配度檢測':
                 join skills s on js.skills_id = s.id
                 where s.name in ({defense})
                 group by j.id, j.no_exper
-                having count(distinct s.name) = {len(select_small)}
+                having count(distinct s.name) >= 1
                 ),
             match_langs as (
                 select jl.job_id
@@ -276,7 +279,7 @@ elif page == '技能適配度檢測':
                 join languages l on jl.language_id = l.id
                 where {final_lang_sql}
                 group by jl.job_id
-                having count(l.name) = {len(select_langs)}
+                having count(l.name) >= 1
             )
             select
                 j.salary_type,
@@ -307,8 +310,7 @@ elif page == '技能適配度檢測':
                 month_data = salary_df[salary_df['salary_type'] == 5]
                 if not month_data.empty:
                     m_min = int(month_data['平均底薪'].iloc[0])
-                    m_max = int(month_data['平均天花板'].iloc[0])
-                    st.metric(label='月薪範圍', value=f"{m_min} ~ {m_max}")
+                    st.metric(label='平均月薪', value=f"{m_min}")
                 year_data = salary_df[salary_df['salary_type'] == 6]
                 if not year_data.empty:
                     m_min = int(year_data['平均底薪'].iloc[0])
@@ -325,33 +327,40 @@ elif page == '技能適配度檢測':
                 if not part_time_data.empty:
                     m_min = int(part_time_data['平均底薪'].iloc[0])
                     st.metric(label='時薪平均', value=f"{m_min}")
-        st.write('---')
-        st.write('### 適合的職務方向')
-        rank_sql = f"""
-            with match_jobs as (
-                select j.id, j.no_exper
-                from jobs j
-                join job_skills js on j.id = js.job_id
-                join skills s on js.skills_id = s.id
-                where s.name in ({defense})
-                group by j.id, j.no_exper
-                having count(distinct s.name) = {len(select_small)}
-                ),
-            match_langs as (
-                select jl.job_id
-                from job_languages jl
-                join languages l on jl.language_id = l.id
-                where {final_lang_sql}
-                group by jl.job_id
-                having count(l.name) = {len(select_langs)}
-            )
-            select
-                jc.name as 適合職缺細項,
-                count(mj.id) as 匹配數量
-            from match_jobs mj
-            join match_langs ml on mj.id = ml.job_id
-            join job_category jc on jcr.category_code = jc.code
-            group by jc.name
-            order by 匹配數量 desc
-            limit 10;
-        """
+            st.write('---')
+            st.write('### 適合的職務方向')
+            rank_sql = f"""
+                with match_jobs as (
+                    select j.id, j.no_exper
+                    from jobs j
+                    join job_skills js on j.id = js.job_id
+                    join skills s on js.skills_id = s.id
+                    where s.name in ({defense})
+                    group by j.id, j.no_exper
+                    having count(distinct s.name) >= 1
+                    ),
+                match_langs as (
+                    select jl.job_id
+                    from job_languages jl
+                    join languages l on jl.language_id = l.id
+                    where {final_lang_sql}
+                    group by jl.job_id
+                    having count(l.name) >= 1
+                )
+                select
+                    jc.name as 適合職缺,
+                    count(mj.id) as 匹配數量
+                from match_jobs mj
+                join match_langs ml on mj.id = ml.job_id
+                join job_category_relations jcr on mj.id = jcr.job_id
+                join job_category jc on jcr.category_code = jc.code
+                group by jc.name
+                order by 匹配數量 desc
+                limit 10;
+            """
+            rank_df = load_data(rank_sql, tuple(final_params))
+            if not rank_df.empty:
+                rank_df['好去處'] = round((rank_df['匹配數量'] / total_jobs) * 100, 1).astype(str) + '%'
+                st.dataframe(rank_df, hide_index=True)
+            else:
+                st.info("目前沒有足夠的資料分析職缺")
