@@ -8,6 +8,7 @@ Fast_Skills.json
 split.py
 regions.txt
 wf.txt
+*.sql
 test1.py
 crawls/
 # C extensions
