@@ -33,10 +33,7 @@ def load_data(query, params=None):
 def quote(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         aa = json.load(f)
-        qq = []
-    for b in aa:
-        qq.append(b)
-    return random.choice(qq)
+    return random.choice(aa)
 @st.cache_data(ttl=3600)
 def db_search(query, params=None):
     conn = mysql.connector.connect(**db_config)
@@ -126,7 +123,15 @@ if page == '職務技能需求表':
     """, unsafe_allow_html=True)
     # 名言佳句
     my_quote = quote('words.json')
-    st.markdown(f"> *{my_quote}*")
+    q_col1, q_col2 = st.columns([1, 4])
+    with q_col1:
+        st.image(my_quote['image'], use_container_width=True)
+    with q_col2:
+        st.markdown(
+            f"<h3 style='font-style: italic; color: lightgray; border-left: 5px solid gray; padding-left: 15px;'>“{my_quote['text']}”</h3>",
+            unsafe_allow_html=True
+        )
+    st.write('---')
 
     # 按鈕部門
     glue = []
@@ -195,7 +200,15 @@ elif page == '技能適配度檢測':
         </style>
     """, unsafe_allow_html=True)
     my_quote = quote('words.json')
-    st.markdown(f"> *{my_quote}*")
+    q_col1, q_col2 = st.columns([1, 4])
+    with q_col1:
+        st.image(my_quote['image'], use_container_width=True)
+    with q_col2:
+        st.markdown(
+            f"<h3 style='font-style: italic; color: lightgray; border-left: 5px solid gray; padding-left: 15px;'>“{my_quote['text']}”</h3>",
+            unsafe_allow_html=True
+        )
+    st.write('---')
     # 按鈕部門
     glue = []
     col1, col2, col3, col4, col5 = st.columns(5)
@@ -412,7 +425,15 @@ elif page == '系統登入':
 elif page == '職缺閱覽':
     st.title('歡迎來到地下寶庫')
     my_quote = quote('words.json')
-    st.markdown(f"> *{my_quote}*")
+    q_col1, q_col2 = st.columns([1, 4])
+    with q_col1:
+        st.image(my_quote['image'], use_container_width=True)
+    with q_col2:
+        st.markdown(
+            f"<h3 style='font-style: italic; color: lightgray; border-left: 5px solid gray; padding-left: 15px;'>“{my_quote['text']}”</h3>",
+            unsafe_allow_html=True
+        )
+    st.write('---')
     st.write('### 快速過濾')
     benefits_sql = 'select name from benefits'
     benefits_df = load_data(benefits_sql)
