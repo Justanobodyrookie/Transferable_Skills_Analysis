@@ -50,3 +50,27 @@
 13. 在執行整個重新寫入時，須注意自己是否有新的auto_increment的設定, alter table skills auto_increment = 1000;
 
 14. 去除爬蟲裡的try...except，因為已開啟extensions防護罩
+
+15. Python 版本不相容安裝 pandas 或 python-dotenv 時報錯，顯示 Requires-Python >=3.11 但環境不符.
+Dockerfile 使用了 python:3.9-slim 作為基底，但專案需求的套件版本（如 Pandas 3.0.1）是給更新版本的 Python 用的
+為什麼地端沒事？ 因為電腦本機裝的 Python 版本比 Docker 映像檔裡的 3.9 還要新。
+
+解決方法
+將 Dockerfile 裡的 FROM python:3.9-slim 修改為 FROM python:3.11-slim
+將 requirements.txt 裡的嚴格版本號 == 改為 >=（相容模式）
+
+16. 套件編譯與相容性報錯
+缺少底層編譯工具導致套件安裝失敗；新舊套件版本衝突；遺漏資料庫連線套件
+解法:
+	安裝系統層級的 build-essential 與 python3-dev 提供 C 語言編譯環境
+	將 numpy 強制降級至 1.x 版解決與 pandas 的底層衝突
+	補裝 mysql-connector-python
+	移除報錯的 python-bcrypt，替換為現代標準版的 bcrypt
+
+17. 記憶體耗盡 (OOM) 導致 VM 當機
+e2-micro 只有 1GB 記憶體，MySQL 啟動時透過 docker-entrypoint-initdb.d 自動讀取龐大的 SQL 檔，瞬間塞爆記憶體，系統啟動自我保護機制砍斷 SSH 連線，導致機器死機。
+解法:
+	去 GCP 控制台強制重設 (Reset) VM
+	利用 fallocate 與 mkswap 建立 2GB 的 Swap (虛擬記憶體)，借用硬碟空間當作記憶體緩衝
+	修改 docker-compose.yml 拔除自動匯入設定
+	待 MySQL 啟動且穩定後，改用 cat job_market.sql | sudo docker exec -i ... 手動將資料緩步灌入
