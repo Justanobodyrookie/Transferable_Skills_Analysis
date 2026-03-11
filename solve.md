@@ -1,76 +1,43 @@
-1. 破解 INSERT IGNORE 的「無聲雪崩」陷阱
-遭遇問題：Python 腳本顯示執行成功，沒有噴出任何 Error，但 MySQL 資料庫裡面的關聯表（如福利、技能、產業）卻是一片空白或維持舊資料。
+專案難題與解決方案總結
+一、 資料架構與 ETL 穩定性 (Data Integrity & ETL Pipeline)
 
-底層原因：濫用或誤解 INSERT IGNORE 的機制。當遇到「外鍵約束失敗 (Foreign Key Constraint Fails)」或是「唯一鍵衝突 (Unique Key)」時，資料庫會直接默默丟棄資料而不報錯。例如，試圖在寫入 industries (母表) 之前，先寫入了 company (子表)。
+1. 破解資料庫「無聲失敗」：
+挑戰： 使用 INSERT IGNORE 導致寫入衝突時資料直接消失，卻沒有報錯。
+解決： 重新梳理資料表相依性，建立嚴格的「父節點先於子節點」寫入順序。開發時適時關閉外鍵檢查進行壓力測試，確保管線在正式環境的純淨度。
 
-解決方案：
+2. 高階「記憶體字典」對應機制：
+挑戰： API 回傳的是字串代碼（如 job_code），但資料庫正規化要求寫入整數 id。
+解決： 堅持 3NF 正規化設計。在批次處理中實作 In-Memory Cache，利用 Python 字典進行 ID 快速「兌換」，避免頻繁敲擊資料庫，在維持資料品質的同時兼顧效能。
 
-重新梳理資料表的依賴關係，嚴格遵守「先建立父節點，再建立子節點」的批次寫入順序（例如：產業 -> 公司 -> 職缺 -> 職缺關聯表）。
+3. 真實世界資料的邊界處理：
+挑戰： 爬蟲資料極度不穩定，常出現 NoneType 導致崩潰。
+解決： 導入防禦性編程，利用 .get() or [] 等 Fallback 機制處理缺失值，確保 ETL 流程在遇到髒資料時具備自癒與容錯能力。
 
-在測試階段果斷關閉外鍵檢查 (SET FOREIGN_KEY_CHECKS = 0)，使用 TRUNCATE 徹底清空半殘的髒資料，確保每次測試環境的純淨。
+二、 極端環境下的效能優化 (Performance Optimization in Constraints)
+1. 雲端記憶體管理與 OOM 救援：
+挑戰： 1GB 記憶體被龐大 SQL 檔與 Docker 塞爆，導致 VM 鎖死（OOM）。
+解決：
+系統層： 手動建立 2GB Swap 虛擬記憶體作為硬體緩衝。
+維運層： 修改部署策略，拔除自動匯入腳本，改用 cat 手動緩步灌入資料。
 
-2. 實作高階的「字典快取 (In-Memory Dictionary Cache)」機制
-遭遇問題：API 爬下來的資料只有字串代碼（如 job_code），但正規化的 MySQL 關聯表（多對多中介表）嚴格要求寫入自動生成的整數 job_id (BigInt)。直接寫入會導致型別錯誤與外鍵匹配失敗。
+2. Streamlit 互動效能調優：
+挑戰： 使用者每次互動都會觸發 SQL 重新連線，導致 CPU 噴高。
+解決： 實作 Connection Pool (連線池) 與 @st.cache_data。透過 max_entries 與 ttl 嚴格控管快取數量，避免快取反向吞噬記憶體，達到互動流暢與資源負載的平衡。
 
-解決方案：沒有選擇退而求其次把表攤平（反正規化），而是堅持 3NF（第三正規化）。在每 1000 筆的批次寫入區塊中，先用 SQL 將資料庫中剛寫入的 job_code 與 id 撈出，在 Python 端轉換成 Dictionary  {job_code: real_id}。利用這個記憶體內的字典，將字串「兌換」成真實 ID 後，才打包交給 executemany 寫入關聯表。
+三、 生態系與相容性除錯 (DevOps & Environment Parity)
+1. Docker 跨版本衝突：
+挑戰： 遭遇 KeyError: 'ContainerConfig'，主因是 Docker Compose 版本與 Image 結構不相容。
+解決： 迅速定位工具版本落差，手動升級 Docker Compose V2，並清理殘留容器鏡像，達成開發環境與部署環境的對齊。
 
-3. API 防呆機制與邊界條件處理
-遭遇問題：在解析數萬筆 JSON 資料時，程式偶爾會突發性崩潰，拋出 TypeError: 'NoneType' object is not iterable。
+2. Python 相依性深度除錯：
+挑戰： Docker 映像檔 Python 版本過舊（3.9），與現代 Pandas（>3.11）不相容。
+解決： 重構 Dockerfile，更新基底映像檔並優化 requirements.txt。同時處理 C 語言編譯環境問題（build-essential）與套件（bcrypt, numpy）衝突。
 
-底層原因：真實世界的爬蟲資料極度不穩定。有些職缺根本沒有填寫「語言要求」，導致 API 回傳 None 而不是預期中的空陣列 []。針對 None 跑 for 迴圈直接導致當機。
+四、 工程細節與觀測性 (Observability & Engineering Best Practices)
+1. 效能與監控的平衡：
+挑戰： 十六萬筆資料處理時，頻繁 print 導致 I/O 拖慢速度。
+解決： 利用「取餘數」技巧（% 1000）實作進度監控，在「觀測程式進度」與「執行效率」間取得平衡。
 
-解決方案：導入防禦性編程（Defensive Programming）思維。在讀取不確定的 JSON 節點時，強制加上 fallback 機制（例如 .get('key') or []），確保即使遇到缺失值，迴圈也能安全略過，保障 ETL 管線在遇到髒資料時的穩定度。
-
-4. 巨量資料批次處理的記憶體管理
-遭遇問題：在處理每批次 1000 筆的迴圈寫入時，發生外鍵錯置，或是資料量越寫越慢、產生重複寫入的靈異現象。
-
-底層原因：迴圈變數污染（複製貼上導致用錯上一個迴圈的變數），以及在 conn.commit() 之後，忘記清空（.clear()）暫存車廂陣列，導致舊資料跟著新資料一起被重複提交。
-
-解決方案：嚴格控管變數生命週期，並在每次成功 Commit 後，確實對所有 List 執行 .clear() 釋放記憶體，確保每個 Batch 都是獨立且乾淨的。
-
-5. json內容最後不能是逗號結尾
-
-6. 監控端
-在處理高達十六萬筆的資料清洗與打包時，我遇到了監控的困難。如果不印出進度，畫面會停滯幾十分鐘，像當機一樣；但如果每一筆都 print，終端機的 I/O (輸出入) 負載會極大，嚴重拖慢 Python 的執行速度。因此，我利用取餘數 (% 1000) 的技巧，每處理一千筆才做一次 I/O 輸出，完美平衡了效能與程式可觀測性。
-
-7. 資料庫跳號
-在建置資料庫關聯時，我發現 skills 表的 Auto Increment ID 發生了跳號現象。經過研究，這是因為我使用了 INSERT IGNORE 來處理重複資料。MySQL 的底層機制是先『預先配發』一個 ID 序號，一旦發現資料重複不寫入，那個序號就被消耗掉了，無法回收。這不是 Bug，而是確保資料庫並發寫入時鎖定效能的正常機制
-
-8. skills表的自動跳號出問題
-自動產生的ID與我設計的邏輯撞車了，直接用自動遞增從1000開始，去避開撞車問題
-
-9. SQL語法串接的and要記得and的前面空一格，避免語法錯誤
-
-10. @st.cache_data功能不接受會變動的List作為參數, 必須用tuple或list去集合起來
-
-11. 為了隱藏CSV下載功能，注入CSS隱藏
-
-12. 用dict去解決不同語言程度問題
-
-13. 在執行整個重新寫入時，須注意自己是否有新的auto_increment的設定, alter table skills auto_increment = 1000;
-
-14. 去除爬蟲裡的try...except，因為已開啟extensions防護罩
-
-15. Python 版本不相容安裝 pandas 或 python-dotenv 時報錯，顯示 Requires-Python >=3.11 但環境不符.
-Dockerfile 使用了 python:3.9-slim 作為基底，但專案需求的套件版本（如 Pandas 3.0.1）是給更新版本的 Python 用的
-為什麼地端沒事？ 因為電腦本機裝的 Python 版本比 Docker 映像檔裡的 3.9 還要新。
-
-解決方法
-將 Dockerfile 裡的 FROM python:3.9-slim 修改為 FROM python:3.11-slim
-將 requirements.txt 裡的嚴格版本號 == 改為 >=（相容模式）
-
-16. 套件編譯與相容性報錯
-缺少底層編譯工具導致套件安裝失敗；新舊套件版本衝突；遺漏資料庫連線套件
-解法:
-	安裝系統層級的 build-essential 與 python3-dev 提供 C 語言編譯環境
-	將 numpy 強制降級至 1.x 版解決與 pandas 的底層衝突
-	補裝 mysql-connector-python
-	移除報錯的 python-bcrypt，替換為現代標準版的 bcrypt
-
-17. 記憶體耗盡 (OOM) 導致 VM 當機
-e2-micro 只有 1GB 記憶體，MySQL 啟動時透過 docker-entrypoint-initdb.d 自動讀取龐大的 SQL 檔，瞬間塞爆記憶體，系統啟動自我保護機制砍斷 SSH 連線，導致機器死機。
-解法:
-	去 GCP 控制台強制重設 (Reset) VM
-	利用 fallocate 與 mkswap 建立 2GB 的 Swap (虛擬記憶體)，借用硬碟空間當作記憶體緩衝
-	修改 docker-compose.yml 拔除自動匯入設定
-	待 MySQL 啟動且穩定後，改用 cat job_market.sql | sudo docker exec -i ... 手動將資料緩步灌入
+2. 資料庫鎖定與跳號理解：
+挑戰： Auto Increment ID 不連續。
+解決： 深入研究 MySQL 並發寫入機制，理解 INSERT IGNORE 對序號的預先配發。解決 ID 與邏輯撞車的問題，並手動重設 auto_increment = 1000 避開邏輯地雷。
