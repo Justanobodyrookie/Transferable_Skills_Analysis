@@ -22,9 +22,9 @@ try:
         return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     def verify_password(password, hash_password):
         return bcrypt.checkpw(password.encode('utf-8'), hash_password.encode('utf-8'))
-    @st.cache_data(ttl=3600)
+    @st.cache_data(ttl=3600, max_entries=100)
     def load_data(query, params=None):
-        conn = mysql.connector.connect(**db_config)
+        conn = mysql.connector.connect(**db_config, pool_name="streamlit_pool", pool_size=3)
         cursor = conn.cursor()
         cursor.execute(query, params)
         data_list = cursor.fetchall()
@@ -36,15 +36,15 @@ try:
         with open(filepath, 'r', encoding='utf-8') as f:
             aa = json.load(f)
         return random.choice(aa)
-    @st.cache_data(ttl=3600)
+    @st.cache_data(ttl=3600, max_entries=100)
     def db_search(query, params=None):
-        conn = mysql.connector.connect(**db_config)
+        conn = mysql.connector.connect(**db_config, pool_name="streamlit_pool", pool_size=3)
         df = pd.read_sql(query, conn, params=params)
         conn.close()
         options = ["請選擇"] + df.iloc[:, 0].tolist()
         return options
     def execute_query(query, params=None):
-        conn = mysql.connector.connect(**db_config)
+        conn = mysql.connector.connect(**db_config, pool_name="streamlit_pool", pool_size=3)
         cursor = conn.cursor()
         try:
             cursor.execute(query, params)
@@ -52,7 +52,7 @@ try:
             return True
         except mysql.connector.Error as err:
             print(f"Error: {err}")
-            send_error(str(e), subject=f"streamlit資料庫連線失敗: {e}")
+            send_error(str(err), subject=f"streamlit資料庫連線失敗: {err}")
             return False
         finally:
             cursor.close()
@@ -166,6 +166,12 @@ try:
             st.markdown("<br>", unsafe_allow_html=True)
             search_button = st.button("搜尋")
         if search_button:
+            if big_cate == "請選擇" and industry == "請選擇":
+                st.warning("為避免資料量過大導致系統崩潰，請選擇一個職務類別及職務中項")
+                st.stop()
+            if big_cate != "請選擇" and middle_cate == "請選擇":
+                st.warning("為避免資料量過大，請再選擇一個職務中項")
+                st.stop()
             st.write("---")
             st.write(f"目前搜尋條件: 大類:{big_cate} / 中類:{middle_cate} / 小類:{small_cate}")
             if small_cate:
