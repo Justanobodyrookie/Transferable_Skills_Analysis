@@ -527,12 +527,13 @@ try:
         if only_no_exper:
             vip_sql = vip_sql + " and j.no_exper = 1"
         vip_sql += f"""
-            group by j.id, r.name, c.name, j.job_title, j.response_pr, j.salary_type, j.salary_min, j.salary_max, j.link
+            group by j.id , j.link, r.name, c.name, j.job_title, j.response_pr, j.salary_type, j.salary_min, j.salary_max
             order by j.created_at desc
             limit 300;
         """
         vip_df = load_data(vip_sql, tuple(vip_params))
         if not vip_df.empty:
+            vip_df = vip_df.drop_duplicates(subset=['公司名稱', '職缺名稱'])
             st.write(f'共 **{len(vip_df)}** 筆結果(最多顯示100筆)')
             st.dataframe(
                 vip_df,
