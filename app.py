@@ -493,9 +493,11 @@ try:
         vip_join_string = '\n'.join(dynamic_vip_joins)
         vip_sql = f"""
             select
+                j.link as 職缺連結,
                 r.name as 地區,
                 c.name as 公司名稱,
                 j.job_title as 職缺名稱,
+                j.apply_num as 應徵人數,
                 round(j.response_pr * 100, 0) as hr回覆率,
                 case j.salary_type
                     when 1 then '面議'
@@ -509,8 +511,7 @@ try:
                 j.salary_min as 最低薪資,
                 j.salary_max as 最高薪資,
                 group_concat(distinct s.name separator ', ') as 技能要求,
-                group_concat(distinct b.name separator ', ') as 公司福利,
-                j.link as 職缺連結
+                group_concat(distinct b.name separator ', ') as 公司福利
             from jobs j
             {vip_join_string}
             join company c on j.company_id = c.id
@@ -527,7 +528,7 @@ try:
         if only_no_exper:
             vip_sql = vip_sql + " and j.no_exper = 1"
         vip_sql += f"""
-            group by j.id , j.link, r.name, c.name, j.job_title, j.response_pr, j.salary_type, j.salary_min, j.salary_max
+            group by j.id , j.link, r.name, c.name, j.job_title, j.response_pr, j.salary_type, j.salary_min, j.salary_max, j.apply_num
             order by j.created_at desc
             limit 300;
         """
